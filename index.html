@@ -309,6 +309,18 @@ tr:last-child td{border-bottom:0;}
 }
 
 /* footer */
+.motto{
+  padding-bottom:52px;margin-bottom:56px;border-bottom:1px solid var(--hair-2);
+}
+.motto .m-cn{
+  font-size:clamp(20px,3.2vw,30px);line-height:1.5;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 12px;font-weight:400;
+}
+.motto .m-en{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3);margin:0;
+}
+@media (max-width:700px){ .motto{padding-bottom:38px;margin-bottom:40px;} }
 .foot{background:var(--void);border-top:1px solid var(--hair-2);padding:80px 0 72px;}
 .foot .mail{font-family:var(--f-disp);font-weight:900;font-size:clamp(26px,5.4vw,56px);letter-spacing:-.035em;line-height:1;display:inline-block;border-bottom:2px solid var(--hot);padding-bottom:8px;}
 .foot .mail:hover{color:var(--hot);}
@@ -808,6 +820,10 @@ tr:last-child td{border-bottom:0;}
 
 <footer class="foot">
   <div class="wrap">
+    <div class="motto">
+      <p class="m-cn">愿你所认同的，终成意义。</p>
+      <p class="m-en">Meaning is yours to give.</p>
+    </div>
     <p class="eyebrow">Contact</p>
     <a class="mail" href="mailto:15858252358@163.com">15858252358@163.com</a>
     <div class="fm">
