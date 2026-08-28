@@ -185,7 +185,7 @@ h2 .cn{letter-spacing:-.026em;}
 .body{max-width:760px;}
 h3{font-size:clamp(20px,2.6vw,28px);font-weight:700;letter-spacing:-.022em;margin:66px 0 16px;line-height:1.3;text-wrap:balance;}
 h3:first-child{margin-top:0;}
-h4{font-size:16.5px;font-weight:700;margin:36px 0 8px;letter-spacing:-.01em;}
+h4{font-size:15.5px;font-weight:700;margin:30px 0 8px;letter-spacing:-.01em;color:var(--ink);}
 p{margin:0 0 18px;color:var(--ink-2);}
 p b,li b,td b{color:var(--ink);font-weight:700;}
 .lede{font-size:clamp(17.5px,2.1vw,21px);line-height:1.7;color:var(--ink);}
@@ -537,8 +537,27 @@ tr:last-child td{border-bottom:0;}
         </details>
       </div>
 
-      <h3>「决」资源系统：数值是反解出来的</h3>
-      <p>这套数值是反解出来的。我先写下想要的体验：<b>读中一次招，加上打出一套完整连段，正好破甲</b>，再让每一项的收益去凑这个等式。</p>
+      <h3>「决」资源系统</h3>
+      <h4>设计动机</h4>
+      <p>战斗的交互不仅限于攻防两端，资源的获取与消耗同样构成交互的一部分——玩家需要判断何时积累、在哪一档消耗、是否承担风险等待更高一档。基于这一判断，本 demo 设计并实现了「决」资源系统。</p>
+
+      <h4>设计约束</h4>
+      <p>该系统不采用体力槽式的行动限制。攻击、闪避、反击等基础行动不消耗资源，任何时刻均可执行；资源由行动产生，并另行提供消耗途径。这一结构与传统 ACT RPG 及二次元手游构建战斗循环的方式一致。</p>
+      <p>「决」是本 demo 中唯一的可消耗资源，作用于单次攻击的分量，不作用于行动的可用性。</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>决值</th><th>解锁</th><th>三条产出路径</th></tr></thead>
+          <tbody>
+            <tr><td>33</td><td>初始强化重击</td><td rowspan="3">轻击命中<br>按住重击蓄力<br>闪避反击</td></tr>
+            <tr><td>66</td><td>更高一阶伤害</td></tr>
+            <tr><td><b>99（满）</b></td><td><b>满决重击，破除 Boss 护甲的唯一手段</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>数值的反解</h4>
+      <p>数值不是先填后调的。先写下想要的体验：<b>读中一次招，加上打出一套完整连段，正好破甲</b>，再让每一项的收益去凑这个等式。</p>
 
       <div class="inst">
         <div class="inst-hd"><span class="t">Resolve Economy</span><span class="v">拖动滑块</span></div>
@@ -560,9 +579,9 @@ tr:last-child td{border-bottom:0;}
           </div>
           <div class="read">
             <div class="h"><em>一次完美闪避让破甲时间减半。</em></div>
-            玩家不用看任何说明就能感觉到读招比站桩快得多。这是设计理念里「给高风险动作高回报」的直接落点。
+            轻击三段产出递增（12 / 14 / 20），完整连段的收益高于中断重来，无需 UI 引导即可被玩家察觉。三档释放的伤害与决值之比呈超线性（2.12 / 2.27 / 2.53），积累越充分，单位资源的伤害转化率越高。
             <br><br>
-            蓄力效率压到轻击链的 45.7%，定位是够不到 Boss 时的兜底。如果它和贴身输出效率接近，玩家会站远处一直蓄，战斗就死了。
+            蓄力效率取轻击链的 45.7%，定位为无法接近目标时的替代路径；若两者效率接近，远距离蓄力将成为最优解，战斗节奏随之瓦解。闪避反击单次产出 33，等于一整档，使读招成为三条产出路径中效率最高的一条。
           </div>
         </div>
       </div>
@@ -574,6 +593,13 @@ tr:last-child td{border-bottom:0;}
         轻击二段的取消帧原本写的是 F18，而它的判定<b>第 8 帧就结束了</b>——中间 10 帧是纯死时间，正是试玩时「不跟手」的直接来源。一直用设计预期值的话，这个问题不会浮出来。
       </div>
       <p>同一套思路还落成了一个运行时校验函数：每次开始游戏检查五条不变式，违规时报出「哪一行 / 违反第几条 / 涉及的数各是多少」，而不是只说一句数据错误。</p>
+
+      <h3>Boss 护甲：把可选升级为必需</h3>
+      <p>Boss 血量降至 50% 以下时进入护甲状态。该状态下玩家造成伤害将锁定 Boss 韧性条，Boss 获得 90% 减伤，仅满决重击可破除护甲，破甲后进入处决窗口。</p>
+      <div class="note">
+        <span class="k">护甲机制成立的前置条件</span>
+        护甲期轻击伤害衰减至 10%，但决值照常积累。若护甲期轻击既不产出伤害也不产出资源，玩家将无法积累破甲所需资源，战斗进入死锁。
+      </div>
 
       <h3>当前状态：做完了什么，还差什么</h3>
       <p>这是一个进行中的项目。已经写好规格但还没实现的部分，我单独标成「已定义」，边界写在下面。</p>
