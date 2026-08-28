@@ -441,6 +441,11 @@ tr:last-child td{border-bottom:0;}
         <div><span class="tag tag-b">待做</span><span>韧性条随时间回升，用来惩罚纯观望</span></div>
       </div>
 
+      <p style="margin-bottom:26px;">
+        完整设计案 14 页，含 11×3 取消矩阵原表、输入缓冲仲裁流程、Boss 二阶段状态机与七条数值推导原则：
+        <a href="pdf/act_design_doc.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">下载 PDF</a>。
+      </p>
+
       <h3>系统怎么落地</h3>
       <p class="lede">
         全部时序数字集中在一张 23 列的帧数据表里。取消矩阵是这张表的视图，本身不存数值，
@@ -705,16 +710,35 @@ tr:last-child td{border-bottom:0;}
     <div class="pg-hd">
       <a class="back" href="#/">&larr; 返回</a>
       <h2><span class="cn">仇远 · 战斗设计拆解</span></h2>
-      <p class="pg-sub">《鸣潮》· 资源阈值 / 循环功能 / 战斗定位</p>
+      <p class="pg-sub">《鸣潮》· 资源阈值 / 技能循环 / 3C 耦合 / 战斗定位</p>
     </div>
     <div class="body">
-      <p class="lede">仇远的「挑灯问剑」是 200 / 400 / 600 三段阈值；我的「决」是 33 / 66 / 99 三段。他的三段是「改变操作手感 / 给队伍增益 / 进入爆发」，我的三段是「威力超线性递增 + 满段破甲」。</p>
-      <p>这份拆解主要写两件事：他为什么这么分，以及我为什么选了另一条路。</p>
+      <p class="lede">
+        13 节，从版本缺口、资源设计、技能循环、3C 耦合到商业化与风险。
+        全文 <a href="pdf/qiuyuan_teardown.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">下载 PDF（14 页）</a>。
+      </p>
+
+      <h3>为什么拆他</h3>
+      <p>仇远的「挑灯问剑」是 200 / 400 / 600 三段阈值；我自己 demo 里的「决」是 33 / 66 / 99 三段。他的三段是「改变操作手感 / 给队伍增益 / 进入爆发」，我的三段是「威力超线性递增 + 满段破甲」。同一种设计语言，两条不同的路。</p>
+
+      <h3>3C 视角：两处耦合矛盾</h3>
+      <p>这是全文我自己最看重的一节。Character、Camera、Control 分别描述意义不大，有价值的是三者之间对不上的地方。</p>
+
       <div class="note">
-        <span class="k">拆解中最锋利的一条</span>
-        仇远的普攻收招防反，在人设层面非常合理——盲眼剑客靠心镜感知反击。但数值上是负收益：只提供 100 点资源，低于阈值后 A1A2 的 200+，且动作帧更长。<b>角色设计鼓励你看破反击，数值设计告诉你别反击。</b>
+        <span class="k">矛盾一　Control 要求的精度，Character 没有提供对应的承受能力</span>
+        Control 层要求玩家在 4–5 秒内完整打完三段回路，中途被打断即归零；Character 层在 0 链时抗打断不足，而共鸣回路本身又被判定为释放声骸技能。结果是玩家失败的原因常常不是读错招，而是这个角色扛不住。
+        <br><br>
+        这个矛盾在高链会自然缓解——3 链后站场延长到 12–13 秒，容错随之变大。也就是说，<b>这个角色的操作容错在相当程度上是由共鸣链投入换来的。</b>
       </div>
-      <p class="mono" style="font-size:12px;letter-spacing:.1em;color:var(--ink-3);">完整拆解案整理中，将于此处发布。</p>
+
+      <div class="note cool">
+        <span class="k">矛盾二　人设与动作给出的承诺，数值没有兑现</span>
+        仇远的人设核心之一是盲眼剑客靠心镜感知反击，Control 层也确实给了普攻收招防反这个输入。动作和人设都在鼓励玩家进行闪避反击，但实际使用起来，闪反的收益远小于它的代价——只提供 100 点资源，低于阈值后 A1A2 的 200 以上，而且动作帧更长。
+      </div>
+
+      <h3>Camera：一处做得好的地方</h3>
+      <p>消耗资源的强化重击有一套明确的镜头调度，三段各不相同：第一段镜头位置保持不变，角色从画面中心跳跃到左下角的竹子上；第二段角色闪烁；第三段角色从天而降，落地后向前穿刺，此段镜头跟随角色移动。</p>
+      <p>前两段用固定机位，角色主动离开画面中心，留白扩大；第三段才切换成跟随，穿刺的位移感因此被放大。<b>同一套重击里混用固定与跟随两种镜头，是有意做出的节奏差。</b></p>
     </div>
   </div>
 </main>
