@@ -272,6 +272,8 @@ input[type=range]{flex:1;min-width:190px;accent-color:var(--hot);height:26px;bac
 .note .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:9px;}
 
 /* shot slot */
+figure.vid{margin:32px 0;padding:0;border:1px solid var(--hair);background:var(--void);}
+figure.vid video{width:100%;height:auto;display:block;}
 .shot-real{margin:32px 0;padding:0;border:1px solid var(--hair);background:var(--void);}
 .shot-real img{width:100%;height:auto;display:block;}
 .shot-real figcaption{
@@ -452,6 +454,15 @@ tr:last-child td{border-bottom:0;}
           第 <span class="mono">15 / 90</span> 帧，连段窗口 <span class="mono">F16</span>、闪避窗口 <span class="mono">F11</span>、
           输入缓冲为空、决 <span class="mono">96 / 99</span>。红色线框是这一刀判定胶囊体的逐帧轨迹，绿色是命中的木桩。
         </figcaption>
+      </figure>
+
+      <h3>演示视频</h3>
+      <p>29 秒，Debug HUD 全程可见。左上角实时打出当前状态、招式、第几帧、连段与闪避窗口、输入缓冲和决值——画面上每一次连段和取消，都能对上这张表里的数字。</p>
+      <figure class="vid">
+        <video controls preload="metadata" poster="video/poster.jpg" playsinline>
+          <source src="video/combat_demo.mp4" type="video/mp4">
+          你的浏览器不支持内嵌视频，可<a href="video/combat_demo.mp4">直接下载</a>。
+        </video>
       </figure>
 
       <h3>取消窗口：承诺、出路、接续</h3>
