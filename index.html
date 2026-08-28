@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>吴云柯 · 战斗策划作品集</title>
+<meta name="description" content="吴云柯（Wink）战斗策划作品集：UE5.8 高速 ACT 战斗系统原型、《徒儿，救我》、末日修仙 Roguelike。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* ============================================================
+   深色战斗调试台
+   饱和色只有两处：判定朱红（重音）+ 帧相位三色（语义）。其余全中性。
+   ============================================================ */
+:root{
+  --void:#08090C;
+  --ground:#0C0E12;
+  --panel:#12151B;
+  --raise:#181C24;
+  --hair:#232935;
+  --hair-2:#1B212A;
+  --ink:#EEF1F5;
+  --ink-2:#A3AEBB;
+  --ink-3:#697585;
+  --hot:#FF4B33;
+  --commit:#4C8FC9;
+  --cancel:#39C08C;
+  --recover:#E3A63C;
+
+  --f-disp:"Archivo","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,sans-serif;
+  --f-body:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,"SF Mono",monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms !important;transition-duration:.01ms !important;} }
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--f-body);font-size:16px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;letter-spacing:.002em;
+}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;}
+a{color:var(--ink);text-decoration:none;}
+:focus-visible{outline:2px solid var(--hot);outline-offset:4px;}
+img{max-width:100%;display:block;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+@media (max-width:700px){ .wrap{padding:0 22px;} }
+
+/* ---------------- nav ---------------- */
+.nav{
+  position:sticky;top:0;z-index:60;
+  background:linear-gradient(to bottom, rgba(8,9,12,.97), rgba(8,9,12,.85));
+  backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid var(--hair-2);
+}
+.nav-in{max-width:1180px;margin:0 auto;padding:0 32px;height:58px;display:flex;align-items:center;gap:28px;}
+.nav-brand{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;}
+.nav-brand b{color:var(--hot);font-weight:600;}
+.nav-links{display:flex;gap:26px;margin-left:auto;}
+.nav-links a{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);transition:color .18s;position:relative;padding:5px 0;
+}
+.nav-links a:hover,.nav-links a.on{color:var(--ink);}
+.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--hot);transition:right .22s ease;}
+.nav-links a:hover::after,.nav-links a.on::after{right:0;}
+@media (max-width:820px){ .nav-links{gap:16px;} .nav-links a{font-size:10.5px;letter-spacing:.08em;} }
+@media (max-width:600px){ .nav-brand{font-size:11px;} .nav-links{gap:12px;} }
+
+/* ---------------- views ---------------- */
+.view{display:none;}
+.view.on{display:block;animation:vin .5s cubic-bezier(.33,1,.68,1) both;}
+@keyframes vin{ from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
+
+/* ================ HOME ================ */
+.home-hero{position:relative;overflow:hidden;background:var(--void);}
+#ruler{position:absolute;inset:0;width:100%;height:100%;opacity:.55;}
+.home-hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(115% 85% at 14% 10%, rgba(255,75,51,.13), transparent 56%),
+             linear-gradient(to bottom, transparent 62%, var(--ground));
+}
+.home-in{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:128px 32px 108px;}
+@media (max-width:700px){ .home-in{padding:80px 22px 68px;} }
+
+.eyebrow{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--hot);margin:0 0 30px;display:flex;align-items:center;gap:12px;
+}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--hot);flex:none;}
+
+h1{
+  font-family:var(--f-disp);font-weight:900;
+  font-size:clamp(52px,11vw,142px);line-height:.88;letter-spacing:-.04em;
+  margin:0 0 26px;text-wrap:balance;
+}
+h1 .cn{letter-spacing:-.018em;}
+
+.home-role{
+  font-family:var(--f-mono);font-size:clamp(11.5px,1.5vw,14px);letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-2);margin:0 0 48px;
+}
+.home-role span{color:var(--ink-3);margin:0 4px;}
+
+.bio{max-width:36em;font-size:clamp(17px,2vw,21px);line-height:1.75;color:var(--ink-2);margin:0 0 22px;}
+.bio b{color:var(--ink);font-weight:700;}
+.bio:last-of-type{margin-bottom:52px;}
+
+.links{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.lk{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--hair);padding:11px 20px;color:var(--ink-2);
+  transition:border-color .18s,color .18s,background .18s;
+}
+.lk:hover{border-color:var(--hot);color:var(--ink);background:rgba(255,75,51,.07);}
+.lk.solid{background:var(--hot);border-color:var(--hot);color:#fff;font-weight:600;}
+.lk.solid:hover{background:#E23F28;}
+
+/* ---- work index ---- */
+.idx-sec{border-top:1px solid var(--hair-2);}
+.idx-hd{
+  max-width:1180px;margin:0 auto;padding:64px 32px 8px;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);
+}
+.idx-list{max-width:1180px;margin:0 auto;padding:0 32px 96px;}
+@media (max-width:700px){ .idx-hd{padding:48px 22px 8px;} .idx-list{padding:0 22px 64px;} }
+
+.entry{
+  display:grid;grid-template-columns:132px minmax(0,1fr) 44px;gap:0 28px;align-items:center;
+  padding:34px 0;border-bottom:1px solid var(--hair-2);
+  transition:padding-left .3s cubic-bezier(.33,1,.68,1);
+  position:relative;
+}
+.entry::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--hot);
+  transform:scaleY(0);transform-origin:center;transition:transform .3s cubic-bezier(.33,1,.68,1);
+}
+.entry:hover{padding-left:22px;}
+.entry:hover::before{transform:scaleY(1);}
+.entry .kind{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);transition:color .22s;
+}
+.entry:hover .kind{color:var(--hot);}
+.entry .t{
+  display:block;
+  font-family:var(--f-disp);font-weight:700;font-size:clamp(22px,3.4vw,38px);
+  line-height:1.14;letter-spacing:-.028em;margin-bottom:10px;
+}
+.entry .d{display:block;font-size:14.5px;color:var(--ink-3);line-height:1.65;max-width:52ch;}
+.entry .ar{
+  font-family:var(--f-mono);font-size:20px;color:var(--ink-3);text-align:right;
+  transition:color .22s,transform .3s cubic-bezier(.33,1,.68,1);
+}
+.entry:hover .ar{color:var(--hot);transform:translateX(6px);}
+@media (max-width:760px){
+  .entry{grid-template-columns:1fr 32px;gap:0 16px;padding:26px 0;}
+  .entry .kind{grid-column:1 / -1;margin-bottom:10px;}
+  .entry .ar{font-size:16px;}
+}
+
+/* ================ SUB-PAGE SHELL ================ */
+.pg{max-width:1180px;margin:0 auto;padding:0 32px 110px;}
+@media (max-width:700px){ .pg{padding:0 22px 72px;} }
+.pg-hd{padding:64px 0 52px;border-bottom:1px solid var(--hair-2);margin-bottom:56px;}
+.back{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);display:inline-block;margin-bottom:34px;transition:color .18s;
+}
+.back:hover{color:var(--hot);}
+h2{
+  font-family:var(--f-disp);font-weight:900;
+  font-size:clamp(34px,6vw,72px);line-height:1;letter-spacing:-.035em;margin:0 0 16px;text-wrap:balance;
+}
+h2 .cn{letter-spacing:-.026em;}
+.pg-sub{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.09em;color:var(--ink-3);margin:0;}
+.pg-meta{
+  display:flex;gap:34px;flex-wrap:wrap;margin-top:30px;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);line-height:1.9;
+}
+.pg-meta b{display:block;color:var(--ink-2);text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px;font-weight:600;}
+
+.body{max-width:760px;}
+h3{font-size:clamp(20px,2.6vw,28px);font-weight:700;letter-spacing:-.022em;margin:66px 0 16px;line-height:1.3;text-wrap:balance;}
+h3:first-child{margin-top:0;}
+h4{font-size:16.5px;font-weight:700;margin:36px 0 8px;letter-spacing:-.01em;}
+p{margin:0 0 18px;color:var(--ink-2);}
+p b,li b,td b{color:var(--ink);font-weight:700;}
+.lede{font-size:clamp(17.5px,2.1vw,21px);line-height:1.7;color:var(--ink);}
+ul.l{margin:0 0 20px;padding:0;list-style:none;}
+ul.l li{position:relative;padding-left:22px;margin-bottom:13px;color:var(--ink-2);}
+ul.l li::before{content:"";position:absolute;left:0;top:.74em;width:9px;height:1px;background:var(--hot);}
+
+/* rules */
+.rules{display:grid;gap:1px;background:var(--hair-2);border:1px solid var(--hair-2);margin:0 0 32px;}
+.rule{background:var(--panel);padding:22px 26px;display:grid;grid-template-columns:44px 1fr;gap:18px;}
+.rule .rid{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--hot);letter-spacing:.06em;padding-top:2px;}
+.rule .rt{font-weight:700;color:var(--ink);margin-bottom:5px;font-size:16.5px;}
+.rule .rb{color:var(--ink-3);font-size:14.5px;line-height:1.72;}
+
+/* instrument */
+.inst{background:var(--panel);border:1px solid var(--hair);margin:32px 0;}
+.inst-hd{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--hair);background:var(--raise);}
+.inst-hd .t{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);}
+.inst-hd .v{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;}
+.inst-bd{padding:26px 22px;}
+.moves{display:flex;flex-wrap:wrap;gap:0;margin-bottom:30px;border:1px solid var(--hair);}
+.move-btn{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.05em;cursor:pointer;
+  background:transparent;color:var(--ink-3);border:0;border-right:1px solid var(--hair);
+  padding:9px 15px;transition:background .16s,color .16s;flex:1 1 auto;white-space:nowrap;
+}
+.move-btn:last-child{border-right:0;}
+.move-btn:hover{color:var(--ink);background:var(--raise);}
+.move-btn[aria-pressed="true"]{background:var(--hot);color:#fff;font-weight:600;}
+.tl-track{position:relative;height:60px;background:var(--void);border:1px solid var(--hair);overflow:hidden;}
+.seg{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;white-space:nowrap;overflow:hidden;transition:left .4s cubic-bezier(.33,1,.68,1), width .4s cubic-bezier(.33,1,.68,1);}
+.seg-commit{background:color-mix(in srgb,var(--commit) 82%, #000);color:#DDEBF6;}
+.seg-cancel{background:color-mix(in srgb,var(--cancel) 78%, #000);color:#DFF6EC;}
+.seg-open{background:color-mix(in srgb,var(--recover) 78%, #000);color:#F8ECD5;}
+.tick{position:absolute;top:0;bottom:0;width:1px;background:var(--ink);transition:left .4s cubic-bezier(.33,1,.68,1);}
+.tick::after{content:attr(data-f);position:absolute;top:100%;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.05em;color:var(--ink);background:var(--raise);padding:3px 7px;border:1px solid var(--hair);margin-top:7px;white-space:nowrap;}
+.tick.lower::after{margin-top:32px;}
+.tick.lower{box-shadow:0 26px 0 -12px var(--hair);}
+.tick.edge-l::after{left:0;transform:none;}
+.tick.edge-r::after{left:auto;right:0;transform:none;}
+.tl-axis{display:flex;justify-content:space-between;margin-top:62px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-3);}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:22px;font-family:var(--f-mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em;}
+.legend i{display:inline-block;width:9px;height:9px;margin-right:8px;}
+.read{margin-top:24px;padding-top:20px;border-top:1px solid var(--hair);font-size:14.5px;line-height:1.75;color:var(--ink-3);}
+.read .h{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--ink);margin-bottom:8px;}
+.read .h em{font-style:normal;color:var(--hot);}
+
+/* equation */
+.eq{font-size:clamp(13px,1.7vw,16px);line-height:2.5;margin:0 0 30px;color:var(--ink-3);}
+.eq .t{font-family:var(--f-mono);background:var(--void);border:1px solid var(--hair);padding:5px 10px;white-space:nowrap;transition:background .3s,color .3s,border-color .3s;}
+.eq .t.on{background:var(--cancel);border-color:var(--cancel);color:#04140E;font-weight:600;}
+.eq .op{color:var(--ink-3);margin:0 7px;}
+.eq .sum{font-family:var(--f-mono);color:var(--ink);font-weight:600;}
+.sl{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:34px;}
+.sl label{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+input[type=range]{flex:1;min-width:190px;accent-color:var(--hot);height:26px;background:transparent;}
+.big{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:30px;}
+.big .n{font-family:var(--f-disp);font-weight:900;font-size:clamp(52px,10vw,92px);line-height:.86;letter-spacing:-.045em;color:var(--hot);font-variant-numeric:tabular-nums;}
+.big .c{font-size:14.5px;color:var(--ink-3);max-width:22em;line-height:1.6;}
+.bars{display:grid;gap:11px;}
+.bar{display:grid;grid-template-columns:120px 1fr 62px;gap:14px;align-items:center;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-3);}
+.bar .out{background:var(--void);height:14px;border:1px solid var(--hair);position:relative;overflow:hidden;}
+.bar .in{position:absolute;inset:0 auto 0 0;background:var(--hair);transition:width .4s cubic-bezier(.33,1,.68,1),background .3s;}
+.bar.hi{color:var(--ink);}
+.bar.hi .in{background:var(--hot);}
+.bar .v{text-align:right;}
+@media (max-width:600px){ .bar{grid-template-columns:92px 1fr 54px;font-size:10.5px;} }
+
+/* asym */
+.asym{border-top:1px solid var(--hair);margin:32px 0 0;}
+.ai{border-bottom:1px solid var(--hair);}
+.ai summary{cursor:pointer;list-style:none;padding:20px 0;display:grid;grid-template-columns:28px 1fr;gap:14px;align-items:baseline;font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.012em;transition:color .16s;}
+.ai summary::-webkit-details-marker{display:none;}
+.ai summary::before{content:"+";font-family:var(--f-mono);color:var(--hot);font-size:16px;font-weight:600;line-height:1.2;}
+.ai[open] summary::before{content:"\2212";}
+.ai summary:hover{color:var(--hot);}
+.ai .b{padding:0 0 24px 42px;color:var(--ink-3);font-size:15px;line-height:1.8;}
+.ai .b b{color:var(--ink);}
+
+/* note */
+.note{border-left:2px solid var(--hot);padding:4px 0 4px 22px;margin:30px 0;font-size:15px;line-height:1.8;color:var(--ink-2);}
+.note b{color:var(--ink);}
+.note.cool{border-left-color:var(--commit);}
+.note .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:9px;}
+
+/* shot slot */
+.shot.off{display:none;}
+.shot{position:relative;background:var(--void);border:1px solid var(--hair);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin:32px 0;overflow:hidden;}
+.shot .ph{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;color:var(--ink-3);text-align:center;line-height:2;padding:24px;}
+.shot .ph b{display:block;color:var(--ink-2);letter-spacing:.16em;text-transform:uppercase;}
+
+/* table */
+.tw{overflow-x:auto;margin:28px 0;border:1px solid var(--hair);}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px;background:var(--panel);}
+th,td{text-align:left;padding:13px 18px;border-bottom:1px solid var(--hair-2);vertical-align:top;color:var(--ink-2);}
+th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:400;background:var(--raise);border-bottom-color:var(--hair);}
+tr:last-child td{border-bottom:0;}
+
+/* status / attribution */
+.st,.at{display:grid;gap:1px;background:var(--hair-2);border:1px solid var(--hair-2);margin:28px 0;}
+.st > div{background:var(--panel);padding:14px 20px;display:grid;grid-template-columns:76px 1fr;gap:18px;align-items:baseline;font-size:14.5px;color:var(--ink-2);}
+.st .tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 0;text-align:center;}
+.tag-a{color:var(--cancel);border:1px solid color-mix(in srgb,var(--cancel) 42%,transparent);}
+.tag-b{color:var(--commit);border:1px solid color-mix(in srgb,var(--commit) 42%,transparent);}
+.tag-c{color:var(--ink-3);border:1px solid var(--hair);}
+.at > div{background:var(--panel);padding:15px 20px;display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:baseline;font-size:14.5px;color:var(--ink-2);}
+.at .w{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;font-weight:600;}
+.w-h{color:var(--hot);} .w-a{color:var(--commit);}
+@media (max-width:620px){
+  .st > div{grid-template-columns:1fr;gap:7px;} .st .tag{width:76px;}
+  .at > div{grid-template-columns:1fr;gap:6px;}
+}
+
+/* footer */
+.foot{background:var(--void);border-top:1px solid var(--hair-2);padding:80px 0 72px;}
+.foot .mail{font-family:var(--f-disp);font-weight:900;font-size:clamp(26px,5.4vw,56px);letter-spacing:-.035em;line-height:1;display:inline-block;border-bottom:2px solid var(--hot);padding-bottom:8px;}
+.foot .mail:hover{color:var(--hot);}
+.foot .fm{margin-top:38px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);line-height:2.1;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="nav-brand" href="#/">WU YUNKE <b>/</b> WINK</a>
+    <div class="nav-links">
+      <a href="#/act" data-v="act">ACT Prototype</a>
+      <a href="#/work" data-v="work">Shipped Work</a>
+      <a href="#/godot" data-v="godot">Godot RPG</a>
+      <a href="#/teardown" data-v="teardown">Teardown</a>
+      <a href="#/ai" data-v="ai">AI Workflow</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HOME ==================== -->
+<main class="view" id="v-home">
+  <header class="home-hero">
+    <canvas id="ruler" aria-hidden="true"></canvas>
+    <div class="home-in">
+      <p class="eyebrow">Combat Designer · Class of 2027</p>
+      <h1><span class="cn">吴云柯</span> / Wink</h1>
+      <p class="home-role">战斗策划 <span>·</span> 2026.12 毕业 <span>·</span> 2027.01 可到岗</p>
+
+      <p class="bio">
+        我是吴云柯，也叫 Wink，游戏行业新人，阶段目标是做战斗策划。
+      </p>
+      <p class="bio">
+        之前在杭州闲米科技做战斗和数值策划，参与的小游戏《徒儿，救我》今年 8 月上线。
+        现在自己在用 UE5.8 做一个 ACT 战斗原型 demo，以及一个 Godot 的 RPG 独立游戏开发。
+      </p>
+      <p class="bio">
+        下面是我目前的一些作品集，如果你对我的作品感兴趣，欢迎联系我。
+      </p>
+
+      <div class="links">
+        <a class="lk solid" href="mailto:838169719@qq.com">邮件联系我</a>
+        <a class="lk" href="#/act">看我在调什么</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="idx-sec">
+    <div class="idx-hd">Selected Work</div>
+    <div class="idx-list">
+      <a class="entry" href="#/act">
+        <span class="kind">Personal · UE5.8</span>
+        <span>
+          <span class="t">高速 ACT 战斗系统原型</span>
+          <span class="d">个人 UE5 战斗原型 Demo，与 Claude MCP 协作。主要负责设计理念、取消窗口、资源系统、帧数据采集与系统迭代。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
+      <a class="entry" href="#/work">
+        <span class="kind">Internship · 杭州闲米科技</span>
+        <span>
+          <span class="t">商业项目</span>
+          <span class="d">在杭州闲米科技做的两个项目。《徒儿，救我》今年 8 月上线。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
+      <a class="entry" href="#/godot">
+        <span class="kind">Personal · Godot</span>
+        <span>
+          <span class="t">独立 RPG 开发中</span>
+          <span class="d">Godot 4.7.1 的独立 RPG，固定 45° 视角的伪 2.5D。剧情设定已完成，目前在做第一个垂直切片。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
+      <a class="entry" href="#/teardown">
+        <span class="kind">Teardown · 鸣潮</span>
+        <span>
+          <span class="t">仇远 · 战斗设计拆解</span>
+          <span class="d">战斗策划视角的《鸣潮》角色仇远拆解。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
+      <a class="entry" href="#/ai">
+        <span class="kind">Workflow</span>
+        <span>
+          <span class="t">关于 AI 协作</span>
+          <span class="d">这个 Demo 的引擎部分很多是 AI 做的。我记录了一部分查找发现的 AI 错误，以及发现的过程。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ==================== ACT ==================== -->
+<main class="view" id="v-act">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">高速 ACT 战斗系统原型</span></h2>
+      <p class="pg-sub">玩家侧完整垂直切片 · 三段轻击 / 「决」资源重击 / 闪避</p>
+      <div class="pg-meta">
+        <div><b>项目</b>个人项目<br>UE 5.8 · 纯蓝图</div>
+        <div><b>时间</b>2026.08 – 至今</div>
+        <div><b>我的角色</b>全部设计 · 全部手感判断<br>全部 Montage 与判定窗口</div>
+      </div>
+    </div>
+
+    <div class="body">
+      <h3>设计理念</h3>
+      <p class="lede">高速 ACT 战斗里最重要的是玩家角色和 Boss 之间的交互。</p>
+      <p>
+        我认为魂系那种以体力槽为核心的攻防，本质上是回合制——你打完我打，
+        中间由体力决定谁能动。而动作游戏的主基调应该是见招拆招、手眼协调、
+        互相进攻，以及夹在其中的一点点策略。
+      </p>
+      <p>
+        所以这个 demo 鼓励玩家和 Boss 对着打。面对 Boss 的攻击，玩家可以闪避也可以格挡，
+        完美闪避和完美格挡都给很高的回报。Boss 的韧性条会在一段时间不受攻击后随时间回升，
+        这是为了让玩家在观察 Boss 出招的同时不能完全不出手。
+      </p>
+      <p>
+        给勇敢的玩家应得的奖励，在玩家没有犯错的时候不要惩罚他——这是我的设计理念。
+      </p>
+      <div class="st" style="margin-top:26px">
+        <div><span class="tag tag-a">已实现</span><span>闪避与取消规则；完美闪避的判定窗口与奖励结构已定义并接入</span></div>
+        <div><span class="tag tag-b">待做</span><span>完美格挡（弹反）</span></div>
+        <div><span class="tag tag-b">待做</span><span>韧性条随时间回升，用来惩罚纯观望</span></div>
+      </div>
+
+      <h3>系统怎么落地</h3>
+      <p class="lede">
+        全部时序数字集中在一张 23 列的帧数据表里。取消矩阵只是它的<b>视图</b>，不存独立数值——
+        改窗口只改表，蓝图一个节点都不用动。
+      </p>
+
+      <div class="shot off"><div class="ph"><b>实机画面</b>竞技场 / 三段连击 / Debug HUD<br>screenshot slot · 16:9</div></div>
+
+      <h3>取消窗口：承诺、出路、接续</h3>
+      <p>整张矩阵由三条原则推导出来，不是逐格填的。</p>
+      <div class="rules">
+        <div class="rule"><div class="rid">R1</div><div>
+          <div class="rt">起手是承诺，判定之后才有出路</div>
+          <div class="rb">任何攻击的闪避取消帧 = 它的判定开始帧。起手就能闪，玩家永远零风险；收招才能闪，玩家永远不敢起手。切在判定开始，风险与出路各占一半。</div></div></div>
+        <div class="rule"><div class="rid">R2</div><div>
+          <div class="rt">打完才能接，空挥要等</div>
+          <div class="rb">连段取消开在判定结束之后。连段的顺滑感必须是「打中的奖励」，而不是「按键的默认」。</div></div></div>
+        <div class="rule"><div class="rid">R3</div><div>
+          <div class="rt">闪避优先级永远最高，无例外</div>
+          <div class="rb">玩家的求生欲必须被系统尊重。这条一旦破例，玩家会直接停止使用被限制的那个招式。</div></div></div>
+      </div>
+
+      <p>下面是实际的帧窗口。切换招式看三段怎么分——<b>注意「闪避」那一行。</b></p>
+
+      <div class="inst">
+        <div class="inst-hd">
+          <span class="t">Cancel Window Timeline</span>
+          <span class="v" id="tl-total">TOTAL 90F @ 60FPS</span>
+        </div>
+        <div class="inst-bd">
+          <div class="moves" id="moves" role="group" aria-label="选择招式"></div>
+          <div class="tl-track" id="track">
+            <div class="seg seg-commit" id="seg-commit"><span>承诺期</span></div>
+            <div class="seg seg-cancel" id="seg-cancel"><span>可闪避</span></div>
+            <div class="seg seg-open" id="seg-open"><span>可接续</span></div>
+            <div class="tick" id="tick-d" data-f="F11"></div>
+            <div class="tick" id="tick-c" data-f="F16"></div>
+          </div>
+          <div class="tl-axis"><span>F0</span><span id="axis-end">F90</span></div>
+          <div class="legend">
+            <span><i style="background:var(--commit)"></i>承诺期 · 按什么都不响应</span>
+            <span><i style="background:var(--cancel)"></i>可闪避 · 出路已开，连段还没开</span>
+            <span><i style="background:var(--recover)"></i>可接续 · 轻击 / 重击都能接</span>
+          </div>
+          <div class="read" id="read"></div>
+        </div>
+      </div>
+
+      <h3>四处刻意的不对称</h3>
+      <p>矩阵里有四个地方我故意没有对称。<b>这一节比矩阵本身更重要</b>——它证明的不是「我会做取消系统」，而是我知道每一个数字在引导玩家做什么。</p>
+      <div class="asym">
+        <details class="ai" open>
+          <summary>闪避接攻击 F16，比闪避接闪避 F22 早 6 帧</summary>
+          <div class="b">把玩家往「闪完就反打」推。<b>如果连滚更快，高速 ACT 会退化成一路滚到 Boss 背后。</b>这 6 帧是整个战斗节奏的方向盘——它决定了这个游戏奖励的是进攻还是逃跑。</div>
+        </details>
+        <details class="ai">
+          <summary>重击的轻击取消（F19–F22）远早于它的收招结束（F79–F103）</summary>
+          <div class="b">重击留了 60–81 帧的「提前脱离」空间。<b>重击的惩罚应该来自空挥没打中，而不是来自打中了还得站着挨打。</b>打中之后能立刻接轻击，重击才有人愿意用。</div>
+        </details>
+        <details class="ai">
+          <summary>受轻击硬直里，闪避取消 F6 远早于攻击取消 F14</summary>
+          <div class="b">被打时能更快闪，但不能更快打。<b>受击后第一反应必须是「救回来」而不是「打回去」。</b>这条是 R3 的直接体现，也是受击体验的关键。</div>
+        </details>
+        <details class="ai">
+          <summary>轻击三段的取消帧 F43，是一二段（F16 / F11）的三倍以上</summary>
+          <div class="b">
+            <b>前两段的取消是「连接」，第三段的取消是「循环」，两者不该用同一条规则。</b>
+            一二段截掉收招看不出来——后一刀的起手接得上前一刀的收势。但三段的收势和第一段的起手对不上，早取消会看到第三刀被生生掐掉。
+            F43 是挥砍视觉收完、开始回站姿的那一帧：让玩家看完这一刀，但不必看完回身。
+            <br><br>
+            这一条是我<b>先做错了才发现的</b>——最初我对三段套用了同一条规则，试玩时第三段刚砍完就能被第一段打断，动画被掐掉且循环无代价。归因之后才意识到「连接」和「循环」是两件事。
+          </div>
+        </details>
+      </div>
+
+      <h3>「决」资源系统：数值是反解出来的</h3>
+      <p>我先写下一句想要的体验——<b>「读中一次招，加上打出一套完整连段，正好破甲」</b>——然后照着这句话把数字解出来，而不是先填数字再看手感。</p>
+
+      <div class="inst">
+        <div class="inst-hd"><span class="t">Resolve Economy</span><span class="v">拖动滑块</span></div>
+        <div class="inst-bd">
+          <p class="eq">
+            <span class="t" id="t-pd">完美闪避 +33</span><span class="op">+</span><span class="t" id="t-ct">窗口内首次命中 +20</span><span class="op">+</span><span class="t on">三段连 12+14+20 = 46</span><span class="op">=</span><span class="sum" id="eq-sum">99</span><span class="op">=</span><b style="color:var(--ink)">满决</b>
+          </p>
+          <div class="sl">
+            <label for="pd">完美闪避次数</label>
+            <input type="range" id="pd" min="0" max="2" step="1" value="0">
+            <span class="mono" id="pd-v" style="min-width:1.4em;font-weight:600;color:var(--ink);">0</span>
+          </div>
+          <div class="big"><span class="n" id="ttb">5.4s</span><span class="c" id="ttb-cap">纯输出打满 99 决所需的实际时间</span></div>
+          <div class="bars">
+            <div class="bar" id="r0"><span>0 次完闪</span><span class="out"><span class="in" style="width:45.8%"></span></span><span class="v">5.4s</span></div>
+            <div class="bar" id="r1"><span>1 次完闪</span><span class="out"><span class="in" style="width:21.2%"></span></span><span class="v">2.5s</span></div>
+            <div class="bar" id="r2"><span>2 次完闪</span><span class="out"><span class="in" style="width:2%"></span></span><span class="v">即时</span></div>
+            <div class="bar" id="r3"><span>纯蓄力兜底</span><span class="out"><span class="in" style="width:100%"></span></span><span class="v">11.8s</span></div>
+          </div>
+          <div class="read">
+            <div class="h"><em>一次完美闪避让破甲时间减半。</em></div>
+            这一句话玩家能自己感受到，不需要任何 UI 解释——这正是我要的：系统在教玩家「读招比站桩快一倍」，而不是弹一个提示告诉他。
+            蓄力效率被刻意压到轻击链的 45.7%，定位很明确：<b style="color:var(--ink-2)">够不到 Boss 时的兜底，不是主路径</b>。如果蓄力和贴身输出效率接近，玩家会站远处一直蓄，战斗就死了。
+          </div>
+        </div>
+      </div>
+
+      <h3>帧数据是实测的，不是估的</h3>
+      <p>引擎的 API 读不到 Animation Notify 的起止帧——<b>两个方向都读不到</b>。判定窗口是战斗游戏里最重要的数字，而我拿不到它。我的解法是让判定条自己报数：运行时把当前帧号打进日志，再把日志读回来。实测值与编辑器完全吻合。</p>
+      <div class="note">
+        <span class="k">看不见就造一个眼睛</span>
+        收益不止于拿到数字。回填之后我发现，轻击二段的取消帧原本写 F18，而它的判定<b>第 8 帧就结束了</b>——中间 10 帧是纯死时间，正是试玩时「不跟手」的直接来源。<b>如果一直用设计预期值，这个问题永远不会浮出来。</b>
+      </div>
+      <p>同一套思路还落成了一个运行时校验函数：每次开始游戏检查五条不变式，违规时报出「哪一行 / 违反第几条 / 涉及的数各是多少」，而不是一句「数据错误」。</p>
+
+      <h3>当前状态：做完了什么，还差什么</h3>
+      <p>这是一个进行中的项目。<b>已定义但未实现，远好过含糊其辞</b>，所以边界写在这里。</p>
+      <div class="st">
+        <div><span class="tag tag-a">已实现</span><span>输入缓冲与优先级仲裁、跨状态缓冲保留策略</span></div>
+        <div><span class="tag tag-a">已实现</span><span>取消矩阵仲裁、招式执行、球体扫描判定与单次挥砍去重</span></div>
+        <div><span class="tag tag-a">已实现</span><span>「决」的积累与分段释放仲裁、帧表运行时校验</span></div>
+        <div><span class="tag tag-b">已定义</span><span>Boss 一阶段：5–6 招、四类可应对标记、决策权重表</span></div>
+        <div><span class="tag tag-b">已定义</span><span>二元护甲门槛与破韧后的处决窗口（约 120 帧的二选一博弈）</span></div>
+        <div><span class="tag tag-c">未实现</span><span>反馈链的屏震 / FOV / 音效 / 特效（目前只有顿帧）</span></div>
+        <div><span class="tag tag-c">未实现</span><span>单目标锁定、四方向闪避位移、战斗姿态 locomotion、正式 UI</span></div>
+      </div>
+      <div class="note cool">
+        <span class="k">一个我自己找出来的穿帮</span>
+        角色的 locomotion 还是引擎模板的<b>徒手</b>动画，而攻击动作是持剑姿态。每次收招都会在 6 帧内被拽回徒手站姿——角色演了 54 帧回到战斗站姿，最后 6 帧全部作废。
+        <br><br>
+        更值得说的是我一度<b>误判</b>了它：我提出的验证方法是「看角色是不是握着剑」。但剑是挂在手骨上的静态网格，播任何动画都在手里，<b>这个观察不可能证伪任何假设</b>。后来靠查资产依赖才确认——引用的动画全部在 <span class="mono">Unarmed/</span> 目录下。教训是：先问「什么结果能推翻这个猜想」，再去做测试。
+      </div>
+
+      <h3>借鉴谱系</h3>
+      <p>借了什么、改了什么、为什么改。说清楚这个，比说「我原创的」更可信。</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>机制</th><th>借鉴自</th><th>我改了什么</th></tr></thead>
+          <tbody>
+            <tr><td>轻击生产 / 重击消费的资源循环</td><td>黑神话：悟空<br><span style="color:var(--ink-3)">棍势</span></td><td>保留结构。这是地基，不必回避</td></tr>
+            <tr><td>满资源才能破甲、一击定生死</td><td>只狼<br><span style="color:var(--ink-3)">躯干条 → 忍杀</span></td><td>只狼攒的是打在对方身上的架势；我攒的是<b>玩家自己的决意</b>——主动权在玩家，不在 Boss 的容错</td></tr>
+            <tr><td>防御成功直接转化为进攻资源</td><td>贝优妮塔 / 忍者龙剑传</td><td>它们给的是<b>时间</b>，我给的是<b>资源数量</b>。资源可累积、可跨回合携带，时间不能</td></tr>
+            <tr><td>护甲期打不动血但推进另一条进度</td><td>怪物猎人<br><span style="color:var(--ink-3)">部位破坏</span></td><td>怪猎的部位破坏是可选支线，我的是<b>唯一主线</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">资源循环的<b>壳</b>来自黑猴，<b>临界点一击</b>的内核来自只狼，<b>防御转资源</b>的接口来自贝姐 / 忍龙。</div>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== WORK ==================== -->
+<main class="view" id="v-work">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">商业项目</span></h2>
+      <p class="pg-sub">《徒儿，救我》· 末日修仙 Roguelike</p>
+      <div class="pg-meta">
+        <div><b>公司</b>杭州闲米科技</div>
+        <div><b>职位</b>战斗 + 数值策划（实习）</div>
+        <div><b>时间</b>2026.03 – 2026.07<br>约 3 个月为组内唯一策划</div>
+      </div>
+    </div>
+
+    <div class="body">
+      <h3>《徒儿，救我》<span style="font-weight:400;color:var(--ink-3);font-size:.58em;font-family:var(--f-mono);"> 微信小游戏 · 2026.08 上线</span></h3>
+      <p class="lede">西游题材，竖屏对称塔防 + 自走棋。我接手时它是一个已上线的三国题材产品，<b>没有设计文档</b>。</p>
+
+      <h4>从解包数据反推出 800 行 GDD</h4>
+      <p>覆盖核心循环、战斗、经济、成长、社交、商业化与系统架构。全文用 <span class="mono">[待确认]</span> 标记那些在解包数据里找不到直接证据的推断——<b>把「我看到的」和「我推的」分开，是这份文档唯一不能省的规矩。</b>后面所有换皮方案都建立在它上面，一个错误的既定事实会一路传下去。</p>
+
+      <h4>规则与数值分离的文档体系</h4>
+      <ul class="l">
+        <li><b>全局规则表</b>（12 章）：地图格子、单位类型、唤灵、放置、合成、神将技能、武器技能、敌人生成与推进</li>
+        <li><b>武器规则表</b>：44 把 / 4 类型 / 5 稀有度 / 5 种触发方式（概率、计数、击杀、距离、专属），并按效果同类归并</li>
+        <li><b>Buff 统一枚举表</b>：把散落在武器、神将、道具、Boss 里的效果抽成一张枚举，供程序侧逐条视觉确认</li>
+        <li><b>画面特效对照表</b>：只列画面上真能看到的效果，并附资源名（<span class="mono">fireGround</span>、<span class="mono">crack</span>）</li>
+      </ul>
+
+      <h4>以 171 轮实测数据反推抽卡底层规则</h4>
+      <p>记录 6 局共 171 轮的实际产出，反推出底层规则：<b>每轮配额恒为 5，等价于 5 次独立随机抽取</b>。过程中定位出 1 条录入异常（某轮三项之和为 7，其余 170 轮均为 5）。</p>
+      <div class="note">
+        <span class="k">同一种方法，两次发生</span>
+        这件事和 ACT 项目里「让判定条把帧号打进日志」是<b>同一种方法</b>。两次的处境完全一样：系统的真相不可直接观测，文档不存在或不可信，于是自己造一个观测手段，用实测数据把规则反推出来。一次是黑盒产品的抽卡表，一次是引擎不暴露的判定帧。<b>我不相信没有实测支撑的数字。</b>
+      </div>
+
+      <h4>三套题材包装方案，在「零改动」的硬约束下</h4>
+      <p>约束是：<b>底层数值、道具与战斗系统完全不动，只改名称、文案、视觉。</b>我独立产出封神、西游、三国三套完整方案，与美术、程序对接落地，最终由公司选定西游版上线。</p>
+      <ul class="l">
+        <li>术语全局替换表（武将→神将、体力→仙力、铲子→开山符……）</li>
+        <li>18 个单字碎片拼成 12 名神将——<b>对齐原版「关 / 张 / 黄」各复用 3 次的碎片复用结构</b>，这样合成概率与掉率表可以一个数都不改</li>
+        <li>44 把武器重命名、54 级段位体系、地图与敌方单位包装</li>
+        <li>撰写微信小游戏备案内容介绍（9 个子系统），完成上线合规流程</li>
+      </ul>
+
+      <h3>末日修仙 割草 Roguelike <span style="font-weight:400;color:var(--ink-3);font-size:.58em;font-family:var(--f-mono);">未上线</span></h3>
+      <ul class="l">
+        <li><b>可直接实现的战斗规格。</b>首场教学战结构稿：体验目标、30–45 秒时长、系统露出点清单，以及失败兜底策略（隐藏护甲 + 血线保护 + 波次压强限制）——<b>教学战的设计目标是「不会输」，那就必须把「不会输」写成可实现的三条规则，而不是一句愿望。</b></li>
+        <li><b>战斗数据层。</b>人物 / 武器 / 怪物 / 波次 / 战场锚点 / 战斗规则主表等 11 张 CSV，规则按「全局共通」与「单场特殊」两层分离，两次完整交付程序。</li>
+        <li><b>竞品拆解。</b>对同类修仙 SLG 的开局 18 分钟做逐节拍拆解，五个维度记录：内容、形式、转场方式、对留存的作用、特效。</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== GODOT ==================== -->
+<main class="view" id="v-godot">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">独立 RPG 开发中</span></h2>
+      <p class="pg-sub">Godot 4.7.1 · 个人项目 · 进行中</p>
+      <div class="pg-meta">
+        <div><b>形态</b>固定 45° 三分之四俯视<br>纯 2D 分层的伪 2.5D</div>
+        <div><b>战斗</b>轻量回合制</div>
+        <div><b>我的角色</b>剧情设定、系统规格<br>验收标准与工时预算</div>
+      </div>
+    </div>
+    <div class="body">
+      <p class="lede">
+        和 ACT 原型同期在做的另一个项目。剧情设定已完成，目前在做第一个可玩的垂直切片。
+      </p>
+      <p>
+        当前切片要跑通的是一条完整闭环，而不是先做正式美术资产：
+        启动读档 → 塔内中庭三个固定角度镜头区 → 移动与近距互动 → 调查线索写入 Flag →
+        触发首战 → 三人轻量回合战 → 胜负写回 → 房间状态变化 → 存档、关闭、重启后恢复。
+      </p>
+      <p>
+        规格里同时写了验收条件与工时预算（P50 / P80 两档），以及失败后允许的一次定向修订上限。
+        这一条和 ACT 原型的做法是一致的：先把「做到什么算完成」写死，再开工。
+      </p>
+      <div class="note">
+        <span class="k">这个项目为什么值得放进来</span>
+        它的战斗是回合制，和 ACT 原型正好相反。放在一起能说明我不是只会一种战斗形态——
+        回合制要处理的是行动顺序与信息公开程度，动作游戏要处理的是帧与取消窗口。
+      </div>
+      <p class="mono" style="font-size:12px;letter-spacing:.1em;color:var(--ink-3);">
+        更多内容整理中。
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== TEARDOWN ==================== -->
+<main class="view" id="v-teardown">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">仇远 · 战斗设计拆解</span></h2>
+      <p class="pg-sub">《鸣潮》· 资源阈值 / 循环功能 / 战斗定位</p>
+    </div>
+    <div class="body">
+      <p class="lede">仇远的「挑灯问剑」是 200 / 400 / 600 三段阈值；我的「决」是 33 / 66 / 99 三段。他的三段是「改变操作手感 / 给队伍增益 / 进入爆发」，我的三段是「威力超线性递增 + 满段破甲」。</p>
+      <p>这份拆解主要写两件事：他为什么这么分，以及我为什么选了另一条路。</p>
+      <div class="note">
+        <span class="k">拆解中最锋利的一条</span>
+        仇远的普攻收招防反，在人设层面非常合理——盲眼剑客靠心镜感知反击。但数值上是负收益：只提供 100 点资源，低于阈值后 A1A2 的 200+，且动作帧更长。<b>角色设计鼓励你看破反击，数值设计告诉你别反击。</b>
+      </div>
+      <p class="mono" style="font-size:12px;letter-spacing:.1em;color:var(--ink-3);">完整拆解案整理中，将于此处发布。</p>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== AI ==================== -->
+<main class="view" id="v-ai">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">关于 AI 协作</span></h2>
+      <p class="pg-sub">逐项归属，以及它错在哪</p>
+      <div class="pg-meta"><div><b>基调</b>AI 执行，我定义和判断</div><div><b>为什么写这节</b>因为你一定会想问</div></div>
+    </div>
+    <div class="body">
+      <p class="lede">ACT 原型的引擎实现大量由 AI 完成——UE5.8 官方的 MCP 接口让它可以直接操作我打开的编辑器。我主动把归属摆出来。</p>
+      <div class="at">
+        <div><span class="w w-h">我</span><span><b>全部设计与所有冻结决策。</b>范围、决系统、砍掉什么、这个 demo 拒绝做什么。设计文档写在实现之前。至少六次我推翻了 AI 已经写进规格的设计。</span></div>
+        <div><span class="w w-h">我</span><span><b>所有手感判断，100%。</b>相机距离、连段接不接得上、第一下起手是不是太慢、闪避的承诺够不够重。AI 没有输入注入能力——<b>它从来没有玩过它自己做的东西。</b></span></div>
+        <div><span class="w w-h">我</span><span><b>全部 9 个 Animation Montage、每一个判定窗口、每一个 Notify。</b>MCP 接口在两个方向上都读写不到 Notify 数据，这部分只能手工，我因此成了流程里的硬依赖。</span></div>
+        <div><span class="w w-h">我</span><span>动作包的选型、导入与重定向；5 个枚举、2 个结构体（API 无法创建）。</span></div>
+        <div><span class="w w-a">AI</span><span>18 个蓝图函数图（输入缓冲、取消仲裁、招式执行、球体扫描去重、帧表校验器），以文本形式编写、编译并回读验证。</span></div>
+        <div><span class="w w-a">AI</span><span>2 张数据表的结构与初值（数值由我审核，帧值后来被实测替换）；输入资产；白模竞技场关卡。</span></div>
+        <div><span class="w w-h">我</span><span><b>设计文档由 AI 起草、我定方向。</b>其中包括一份专门写给我自己的讲解文档，目的就是保证系统的每一部分我都能自己讲清楚。</span></div>
+      </div>
+
+      <h3>AI 犯过的错，以及是怎么被抓到的</h3>
+      <p>它写出来的蓝图逻辑功能性 bug 很少。<b>它错得最多的是「为什么不行」的判断</b>——而因为它同时在写文档，这些错误判断会被记成既定事实，然后在后面被引用。</p>
+      <ul class="l">
+        <li><b>它凭空发明了一条工具限制，并把它写进了项目文档。</b>它报告某个蓝图创建工具会卡死整条 MCP 通道，于是绕开它、把这部分交给我手工做了好几天。我看过别人视频里用这个工具，据此要求重测——工具没问题，真实原因是漏了一个必填参数会弹出模态框、阻塞游戏线程，从外面看起来就像卡死。<b>它的诊断合理、自洽，而且是错的。纠正来自我见过外部世界，不来自它的推理。</b></li>
+        <li><b>它提出了一个无法区分自身假设的实验</b>（就是 locomotion 那件事），然后在一个必然为真的观察上自信地更新了结论。</li>
+        <li><b>两个信源冲突时，它默认怀疑另一个 AI，而不是怀疑仪器。</b>实际是读图工具根本不渲染 Enhanced Input 的事件连线，另一个 agent 如实汇报了它看到的东西。</li>
+        <li><b>一次破坏性的默认参数，只被版本控制接住。</b>一个保存调用传了空参数，空 = 保存全部脏资产，于是写进了 8 个只读的引擎模板资产。<span class="mono">git checkout</span> 一条命令恢复。<b>这件事说明的不是模型判断要更好，而是代理工具需要一个便宜、完整、常开的撤销。</b></li>
+      </ul>
+      <div class="note">
+        <span class="k">我从这些事故里定下的工作规则</span>
+        <b>每次写入之后必须回读，永远不要相信返回值。</b>对一个真正在操作生产系统的代理来说，验证是习惯，不是调试步骤。
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <a class="mail" href="mailto:838169719@qq.com">838169719@qq.com</a>
+    <div class="fm">
+      吴云柯（Wink）· 巴克内尔大学 统计与数据分析<br>
+      2026.12 毕业 · 2027.01 可到岗 · 简历与完整设计案可另附<br>
+      本页所引数值均来自本人项目文档；商业项目部分只涉及玩家侧可见信息。
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- router ---------------- */
+  var VIEWS = ["home","act","work","godot","teardown","ai"];
+  function current(){
+    var h = (location.hash || "#/").replace(/^#\/?/, "");
+    return VIEWS.indexOf(h) >= 0 ? h : "home";
+  }
+  function route(){
+    var v = current();
+    VIEWS.forEach(function(n){
+      var el = document.getElementById("v-" + n);
+      if(el) el.classList.toggle("on", n === v);
+    });
+    document.querySelectorAll(".nav-links a").forEach(function(a){
+      a.classList.toggle("on", a.getAttribute("data-v") === v);
+    });
+    window.scrollTo(0, 0);
+    if(v === "act") redraw();      /* 时间轴要在可见后重新量宽度 */
+    if(v === "home") drawRuler();
+  }
+  window.addEventListener("hashchange", route);
+
+  /* ---------------- hero: frame ruler ---------------- */
+  var cv = document.getElementById("ruler");
+  function drawRuler(){
+    if(!cv) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = cv.clientWidth, h = cv.clientHeight;
+    if(!w || !h) return;
+    cv.width = w * dpr; cv.height = h * dpr;
+    var g = cv.getContext("2d");
+    g.setTransform(dpr,0,0,dpr,0,0);
+    g.clearRect(0,0,w,h);
+    for(var x = 0, i = 0; x <= w; x += 16, i++){
+      var major = (i % 6 === 0);
+      g.strokeStyle = major ? "rgba(163,174,187,.16)" : "rgba(163,174,187,.07)";
+      g.lineWidth = 1;
+      g.beginPath();
+      g.moveTo(Math.round(x)+.5, h);
+      g.lineTo(Math.round(x)+.5, h - (major ? h*0.16 : h*0.07));
+      g.stroke();
+    }
+  }
+
+  /* ---------------- cancel window timeline ---------------- */
+  /* 数据来源：取消规则表 §2.1（2026-08-26 按运行时实测重算） */
+  var MOVES = [
+    { n:"轻击一段", total:90,  dodge:11, combo:16,
+      note:"起手 11 帧的承诺期，按什么都不响应。判定一开始，闪避的出路就打开了（R1）。再过 5 帧，连段窗口打开。" },
+    { n:"轻击二段", total:78,  dodge:3,  combo:11,
+      note:"二段的承诺期只有 3 帧，因为它是接在一段之后的——玩家已经在连段里，不需要再付一次承诺代价。" },
+    { n:"轻击三段", total:83,  dodge:9,  combo:43,
+      note:"连段取消推到 F43，是一二段的三倍以上：前两段的取消是「连接」，三段的取消是「循环」。但闪避取消仍在 F9——R3 没有例外。" },
+    { n:"快重击", total:103, dodge:11, combo:22,
+      note:"决不足一段时的保底重击。F22 就能接轻击，剩下 81 帧全是可脱离的——重击的惩罚该来自空挥，不该来自打中之后站着挨打。" },
+    { n:"决斩·一/二段", total:79, dodge:2, combo:19,
+      note:"承诺期只有 2 帧。这是一次已经付过代价的释放——资源在按下前就攒好了，不该在动作里二次收费。" },
+    { n:"决斩·三段", total:139, dodge:3, combo:75,
+      note:"满决破甲斩。139 帧是全套里最长的，连段取消 F75 也最晚——它是这一轮攻防的句号，必须让它演完。" },
+    { n:"闪避", total:80, dodge:22, combo:16,
+      note:"唯一一处「可接续」比「可闪避」更早的招式：接攻击 F16，接闪避 F22。这 6 帧把玩家往「闪完就反打」推——如果连滚更快，高速 ACT 会退化成一路滚到 Boss 背后。" }
+  ];
+
+  var elMoves = document.getElementById("moves");
+  var segC = document.getElementById("seg-commit"),
+      segM = document.getElementById("seg-cancel"),
+      segO = document.getElementById("seg-open"),
+      tkD  = document.getElementById("tick-d"),
+      tkC  = document.getElementById("tick-c"),
+      axis = document.getElementById("axis-end"),
+      tot  = document.getElementById("tl-total"),
+      read = document.getElementById("read"),
+      trk  = document.getElementById("track");
+  var btns = [], cur = 0;
+
+  function pct(f,t){ return (f/t)*100; }
+  function place(el,p,label){
+    el.style.left = p + "%";
+    el.setAttribute("data-f", label);
+    el.classList.toggle("edge-l", p < 9);
+    el.classList.toggle("edge-r", p > 91);
+  }
+  function render(i){
+    cur = i;
+    var m = MOVES[i];
+    var a = Math.min(m.dodge, m.combo), b = Math.max(m.dodge, m.combo);
+    segC.style.left="0%";               segC.style.width = pct(a,m.total)+"%";
+    segM.style.left=pct(a,m.total)+"%"; segM.style.width = pct(b-a,m.total)+"%";
+    segO.style.left=pct(b,m.total)+"%"; segO.style.width = pct(m.total-b,m.total)+"%";
+
+    var dFirst = m.dodge <= m.combo;
+    segM.firstElementChild.textContent = dFirst ? "可闪避" : "可接续";
+    segO.firstElementChild.textContent = dFirst ? "可接续" : "全部开放";
+
+    var tw = trk.clientWidth || 820;
+    [[segC,a],[segM,b-a],[segO,m.total-b]].forEach(function(p){
+      p[0].firstElementChild.style.visibility = (tw*p[1]/m.total) < 76 ? "hidden" : "visible";
+    });
+
+    place(tkD, pct(m.dodge,m.total), "闪避 F"+m.dodge);
+    place(tkC, pct(m.combo,m.total), "连段 F"+m.combo);
+    tkD.classList.toggle("lower", !dFirst);
+    tkC.classList.toggle("lower", dFirst);
+
+    axis.textContent = "F"+m.total;
+    tot.textContent  = "TOTAL "+m.total+"F @ 60FPS";
+    read.innerHTML   = '<div class="h"><em>'+m.n+'</em> · 总 '+m.total+' 帧 · 闪避取消 F'+m.dodge+
+                       ' · 连段取消 F'+m.combo+'</div>'+m.note;
+  }
+  function redraw(){ render(cur); }
+
+  MOVES.forEach(function(m,i){
+    var b = document.createElement("button");
+    b.type="button"; b.className="move-btn"; b.textContent=m.n;
+    b.setAttribute("aria-pressed", i===0 ? "true" : "false");
+    b.addEventListener("click", function(){
+      btns.forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true");
+      render(i);
+    });
+    btns.push(b); elMoves.appendChild(b);
+  });
+  render(0);
+
+  /* ---------------- resolve economy ---------------- */
+  /* 数据来源：势资源系统与Boss护甲_设计方案 §2.2 / §2.3 */
+  var P = [
+    { s:"5.4s", c:"纯输出打满 99 决所需的实际时间",             r:"r0" },
+    { s:"2.5s", c:"一次完美闪避 + 反击命中之后，只剩 60 帧输出", r:"r1" },
+    { s:"即时", c:"两次完美闪避 + 反击命中，不需要任何输出帧",   r:"r2" }
+  ];
+  var pd=document.getElementById("pd"), pdv=document.getElementById("pd-v"),
+      ttb=document.getElementById("ttb"), cap=document.getElementById("ttb-cap"),
+      tPd=document.getElementById("t-pd"), tCt=document.getElementById("t-ct"),
+      sum=document.getElementById("eq-sum"),
+      rows=["r0","r1","r2","r3"].map(function(id){ return document.getElementById(id); });
+  function rr(){
+    var n = parseInt(pd.value,10);
+    pdv.textContent=n; ttb.textContent=P[n].s; cap.textContent=P[n].c;
+    tPd.classList.toggle("on", n>=1);
+    tCt.classList.toggle("on", n>=1);
+    sum.textContent = n>=1 ? "99" : "46";
+    rows.forEach(function(r){ r.classList.remove("hi"); });
+    document.getElementById(P[n].r).classList.add("hi");
+  }
+  pd.addEventListener("input", rr); rr();
+
+  /* ---------------- boot ---------------- */
+  var rt;
+  window.addEventListener("resize", function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ drawRuler(); redraw(); }, 140);
+  });
+  route();
+})();
+</script>
+
+</body>
+</html>
