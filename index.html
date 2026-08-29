@@ -325,6 +325,10 @@ tr:last-child td{border-bottom:0;}
 .foot .mail{font-family:var(--f-disp);font-weight:900;font-size:clamp(26px,5.4vw,56px);letter-spacing:-.035em;line-height:1;display:inline-block;border-bottom:2px solid var(--hot);padding-bottom:8px;}
 .foot .mail:hover{color:var(--hot);}
 .foot .fm{margin-top:38px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);line-height:2.1;}
+.cut{margin:0 0 22px;padding:0 0 0 22px;counter-reset:cut}
+.cut li{list-style:none;position:relative;padding:7px 0 7px 34px;font-size:14px;color:var(--ink-2);border-bottom:1px solid var(--line)}
+.cut li:last-child{border-bottom:0}
+.cut li::before{counter-increment:cut;content:counter(cut);position:absolute;left:0;top:7px;width:20px;height:20px;line-height:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--recover);border:1px solid var(--recover);border-radius:2px}
 </style>
 </head>
 <body>
@@ -352,20 +356,21 @@ tr:last-child td{border-bottom:0;}
       <p class="home-role">战斗策划 <span>·</span> 2026.12 毕业 <span>·</span> 2027.01 可到岗</p>
 
       <p class="bio">
-        我是吴云柯，也叫 Wink，游戏行业新人，阶段目标是做战斗策划。
+        我是吴云柯，也叫 Wink，2027 届，找战斗策划的工作。
       </p>
       <p class="bio">
-        之前在杭州闲米科技做战斗和数值策划，参与的小游戏《徒儿，救我》今年 8 月上线。
-        现在自己在用 UE5.8 做一个 ACT 战斗原型 demo，以及一个 Godot 的 RPG 独立游戏开发。
+        在杭州闲米科技做过五个月战斗和数值策划，参与的《徒儿，救我》今年 8 月上线，
+        其中有三个月我是项目组里唯一的策划。现在用 UE5.8 做一个 ACT 战斗原型，
+        另外有一个 Godot 的 RPG 在做。
       </p>
       <p class="bio">
-        下面是我目前的一些作品集，如果你对我的作品感兴趣，欢迎联系我。
+        下面这些是我做的东西。想聊的话发邮件给我。
       </p>
 
       <div class="links">
         <a class="lk solid" href="mailto:15858252358@163.com">邮件联系我</a>
         <a class="lk" href="https://github.com/Winnnnk" target="_blank" rel="noopener">GitHub</a>
-        <a class="lk" href="#/act">看我在调什么</a>
+        <a class="lk" href="#/act">看战斗原型</a>
       </div>
     </div>
   </header>
@@ -377,7 +382,7 @@ tr:last-child td{border-bottom:0;}
         <span class="kind">Personal · UE5.8</span>
         <span>
           <span class="t">高速 ACT 战斗系统原型</span>
-          <span class="d">个人 UE5 战斗原型 Demo，与 Claude MCP 协作。主要负责设计理念、取消窗口、资源系统、帧数据采集与系统迭代。</span>
+          <span class="d">UE5.8 纯蓝图。取消矩阵、输入缓冲与优先级仲裁、「决」资源系统，全部帧窗口实测回填。蓝图实现与 Claude MCP 协作。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -385,7 +390,7 @@ tr:last-child td{border-bottom:0;}
         <span class="kind">Internship · 杭州闲米科技</span>
         <span>
           <span class="t">商业项目</span>
-          <span class="d">在杭州闲米科技做的两个项目。《徒儿，救我》今年 8 月上线。</span>
+          <span class="d">闲米科技的两个项目。《徒儿，救我》今年 8 月上线；另一个未上线的项目里有三个月我是组里唯一的策划。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -401,7 +406,7 @@ tr:last-child td{border-bottom:0;}
         <span class="kind">Teardown · 鸣潮</span>
         <span>
           <span class="t">仇远 · 战斗设计拆解</span>
-          <span class="d">战斗策划视角的《鸣潮》角色仇远拆解。</span>
+          <span class="d">从资源阈值、技能循环和 3C 耦合三个层面拆《鸣潮》的仇远，包括三处我认为没对上的地方。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -409,7 +414,7 @@ tr:last-child td{border-bottom:0;}
         <span class="kind">Workflow</span>
         <span>
           <span class="t">关于 AI 协作</span>
-          <span class="d">这个 Demo 的引擎部分很多是 AI 做的。我记录了一部分查找发现的 AI 错误，以及发现的过程。</span>
+          <span class="d">蓝图实现部分是和 AI 协作做的。这里记录了几次它做错的地方，以及我是怎么发现的。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -427,7 +432,7 @@ tr:last-child td{border-bottom:0;}
       <div class="pg-meta">
         <div><b>项目</b>个人项目<br>UE 5.8 · 纯蓝图</div>
         <div><b>时间</b>2026.08 – 至今</div>
-        <div><b>我的角色</b>全部设计 · 全部手感判断<br>全部 Montage 与判定窗口</div>
+        <div><b>我的角色</b>设计与数值 · 手感判断<br>全部 Montage 与判定窗口</div>
       </div>
     </div>
 
@@ -454,7 +459,8 @@ tr:last-child td{border-bottom:0;}
       </div>
 
       <p style="margin-bottom:26px;">
-        完整设计案 14 页，含 11×3 取消矩阵原表、输入缓冲仲裁流程、Boss 二阶段状态机与七条数值推导原则：
+        完整设计案 16 页，含 11×3 取消矩阵原表、输入缓冲与仲裁流程、「决」系统的数值反解、
+        Boss 一阶段规格、七条帧数据原则与止损梯度：
         <a href="pdf/act_design_doc.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">下载 PDF</a>。
       </p>
 
@@ -482,8 +488,8 @@ tr:last-child td{border-bottom:0;}
         </video>
       </figure>
 
-      <h3>取消窗口：承诺、出路、接续</h3>
-      <p>整张矩阵由三条原则推导出来，不是逐格填的。</p>
+      <h3>取消窗口</h3>
+      <p>整张矩阵由三条原则推导出来。</p>
       <div class="rules">
         <div class="rule"><div class="rid">R1</div><div>
           <div class="rt">起手是承诺，判定之后才有出路</div>
@@ -496,7 +502,7 @@ tr:last-child td{border-bottom:0;}
           <div class="rb">任何状态下只要闪避窗口开着，闪避输入压过一切。这条一旦开例外（比如「重击不可被闪避取消」），玩家会干脆不用那个招式。玩家想活下来的时候，系统不该拦他。</div></div></div>
       </div>
 
-      <p>下面是实际的帧窗口。切换招式看三段怎么分——<b>注意「闪避」那一行。</b></p>
+      <p>切换招式可以看到三段的帧窗口怎么分。闪避那一行是这套系统里唯一没有例外的规则。</p>
 
       <div class="inst">
         <div class="inst-hd">
@@ -523,7 +529,7 @@ tr:last-child td{border-bottom:0;}
       </div>
 
       <h3>四处刻意的不对称</h3>
-      <p>矩阵里有四个地方我故意没有对称。<b>这一节比矩阵本身更重要</b>——它证明的不是「我会做取消系统」，而是我知道每一个数字在引导玩家做什么。</p>
+      <p>矩阵里有四个地方是刻意不对称的。每一处不对称都在把玩家往一个方向推。</p>
       <div class="asym">
         <details class="ai" open>
           <summary>闪避接攻击 F16，比闪避接闪避 F22 早 6 帧</summary>
@@ -540,10 +546,9 @@ tr:last-child td{border-bottom:0;}
         <details class="ai">
           <summary>轻击三段的取消帧 F43，是一二段（F16 / F11）的三倍以上</summary>
           <div class="b">
-            我最初对三段轻击套用了同一条取消规则。试玩时发现第三段刚砍完就能被第一段打断，动画被掐掉，而且循环一次没有任何代价。
+            我最初对三段轻击套用了同一条取消规则。试玩时发现第三段刚砍完就能被第一段打断，动画被掐掉，循环一次没有任何代价。
             <br><br>
-            归因之后才想明白：<b>前两段的取消是「连接」，第三段的取消是「循环」。</b>
-            一二段截掉收招看不出来，后一刀的起手接得上前一刀的收势；三段的收势和第一段的起手对不上，早取消就会看到第三刀被生生掐断。两者不该用同一条规则。
+            一二段的取消接的是下一刀，三段的取消接的是整个循环的开头。一二段截掉收招看不出来，后一刀的起手接得上前一刀的收势；三段的收势和第一段的起手对不上，早取消就会看到第三刀被生生掐断。两者不该用同一条规则。
             F43 是挥砍视觉收完、开始回站姿的那一帧——让玩家看完这一刀，但不必看完回身。
           </div>
         </details>
@@ -598,23 +603,23 @@ tr:last-child td{border-bottom:0;}
         </div>
       </div>
 
-      <h3>帧数据是实测的，不是估的</h3>
-      <p>引擎的 API 读不到 Animation Notify 的起止帧，读和写两个方向都不支持。判定窗口是这套系统里最关键的一组数字，而我拿不到。解决办法是让判定条自己报数：运行时把当前帧号写进日志，再把日志读回来。实测值与编辑器里显示的完全一致。</p>
+      <h3>帧数据</h3>
+      <p>我做了一套运行时打点回读：让判定在触发的那一帧把帧号写进日志，再把日志读回来填进帧数据表。表里每一个窗口都是这样实测出来的，和编辑器里显示的完全一致。之所以要绕这一圈，是因为引擎的 API 在读和写两个方向都拿不到 Animation Notify 的起止帧，而判定窗口是这套系统里最关键的一组数字。</p>
       <div class="note">
         <span class="k">回填之后发现的问题</span>
         轻击二段的取消帧原本写的是 F18，而它的判定<b>第 8 帧就结束了</b>——中间 10 帧是纯死时间，正是试玩时「不跟手」的直接来源。一直用设计预期值的话，这个问题不会浮出来。
       </div>
       <p>同一套思路还落成了一个运行时校验函数：每次开始游戏检查五条不变式，违规时报出「哪一行 / 违反第几条 / 涉及的数各是多少」，而不是只说一句数据错误。</p>
 
-      <h3>Boss 护甲：把可选升级为必需</h3>
+      <h3>Boss 护甲</h3>
       <p>Boss 血量降至 50% 以下时进入护甲状态。该状态下玩家造成伤害将锁定 Boss 韧性条，Boss 获得 90% 减伤，仅满决重击可破除护甲，破甲后进入处决窗口。</p>
       <div class="note">
         <span class="k">护甲机制成立的前置条件</span>
         护甲期轻击伤害衰减至 10%，但决值照常积累。若护甲期轻击既不产出伤害也不产出资源，玩家将无法积累破甲所需资源，战斗进入死锁。
       </div>
 
-      <h3>当前状态：做完了什么，还差什么</h3>
-      <p>这是一个进行中的项目。已经写好规格但还没实现的部分，我单独标成「已定义」，边界写在下面。</p>
+      <h3>当前状态</h3>
+      <p>这是一个进行中的项目。已经写好规格但还没实现的部分标成「已定义」。</p>
       <div class="st">
         <div><span class="tag tag-a">已实现</span><span>输入缓冲与优先级仲裁、跨状态缓冲保留策略</span></div>
         <div><span class="tag tag-a">已实现</span><span>取消矩阵仲裁、招式执行、球体扫描判定与单次挥砍去重</span></div>
@@ -631,8 +636,21 @@ tr:last-child td{border-bottom:0;}
         我一度误判了它。当时提出的验证方法是「看角色是不是握着剑」。但剑是挂在手骨上的静态网格，播任何动画都在手里，<b>这个观察不可能推翻任何假设</b>。后来查资产依赖才确认，引用的动画全部在 <span class="mono">Unarmed/</span> 目录下。之后我给自己定了一条：先问什么结果能推翻这个猜想，再去做测试。
       </div>
 
+      <h3>止损顺序</h3>
+      <p>时间不够的时候先砍什么，我提前定好了顺序，不在压力下临时判断。</p>
+      <ol class="cut">
+        <li>弹反</li>
+        <li>Boss 二阶段</li>
+        <li>处决与进阶演出</li>
+        <li>可玩 Build</li>
+        <li>Boss 招式数量</li>
+      </ol>
+      <div class="note">
+        <span class="k">永远不砍的四样</span>
+        三段普攻的取消手感、输入缓冲、完美闪避、反馈链分级。这四样里任何一样出问题，剩下的东西做得再多也救不回来。
+      </div>
+
       <h3>借鉴谱系</h3>
-      <p>借了什么、改了什么、为什么改。</p>
       <div class="tw">
         <table>
           <thead><tr><th>机制</th><th>借鉴自</th><th>我改了什么</th></tr></thead>
