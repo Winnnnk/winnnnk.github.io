@@ -382,7 +382,7 @@ tr:last-child td{border-bottom:0;}
         <span class="kind">Personal · UE5.8</span>
         <span>
           <span class="t">高速 ACT 战斗系统原型</span>
-          <span class="d">UE5.8 纯蓝图。取消矩阵、输入缓冲与优先级仲裁、「决」资源系统，全部帧窗口实测回填。蓝图实现与 Claude MCP 协作。</span>
+          <span class="d">UE5.8 纯蓝图。取消矩阵、输入缓冲与优先级仲裁、「决」资源系统、完美闪避与专属反击，全部帧窗口实测回填。蓝图实现与 Claude MCP 协作。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -428,7 +428,7 @@ tr:last-child td{border-bottom:0;}
     <div class="pg-hd">
       <a class="back" href="#/">&larr; 返回</a>
       <h2><span class="cn">高速 ACT 战斗系统原型</span></h2>
-      <p class="pg-sub">玩家侧完整垂直切片 · 三段轻击 / 「决」资源重击 / 闪避</p>
+      <p class="pg-sub">玩家侧完整垂直切片 · 三段轻击 / 「决」资源重击 / 完美闪避与反击</p>
       <div class="pg-meta">
         <div><b>项目</b>个人项目<br>UE 5.8 · 纯蓝图</div>
         <div><b>时间</b>2026.08 – 至今</div>
@@ -453,7 +453,8 @@ tr:last-child td{border-bottom:0;}
         给勇敢的玩家应得的奖励，在玩家没有犯错的时候不要惩罚他——这是我的设计理念。
       </p>
       <div class="st" style="margin-top:26px">
-        <div><span class="tag tag-a">已实现</span><span>闪避与取消规则；完美闪避的判定窗口与奖励结构已定义并接入</span></div>
+        <div><span class="tag tag-a">已实现</span><span>闪避与取消规则；完美闪避的无敌帧、时缓、资源奖励与反击窗口</span></div>
+        <div><span class="tag tag-a">已实现</span><span>专属反击招式 <span class="mono">Counter_01</span>，完闪窗口内轻击自动变招</span></div>
         <div><span class="tag tag-b">待做</span><span>完美格挡（弹反）</span></div>
         <div><span class="tag tag-b">待做</span><span>韧性条随时间回升，用来惩罚纯观望</span></div>
       </div>
@@ -480,7 +481,8 @@ tr:last-child td{border-bottom:0;}
       </figure>
 
       <h3>演示视频</h3>
-      <p>29 秒，Debug HUD 全程可见。左上角实时打出当前状态、招式、第几帧、连段与闪避窗口、输入缓冲和决值——画面上每一次连段和取消，都能对上这张表里的数字。</p>
+      <p>29 秒，Debug HUD 全程可见。左上角实时打出当前状态、招式、第几帧、连段与闪避窗口、输入缓冲和决值，画面上每一次连段和取消都能对上这张表里的数字。</p>
+      <p class="mono" style="font-size:12px;color:var(--ink-3);">这段录于 2026-08-27，早于完美闪避与反击的实现，画面里看不到这两项。新版演示待录。</p>
       <figure class="vid">
         <video controls preload="metadata" poster="video/poster.jpg" playsinline>
           <source src="video/combat_demo.mp4" type="video/mp4">
