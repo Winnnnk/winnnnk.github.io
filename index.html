@@ -622,15 +622,24 @@ tr:last-child td{border-bottom:0;}
       </div>
 
       <h3>当前状态</h3>
-      <p>这是一个进行中的项目。已经写好规格但还没实现的部分标成「已定义」。</p>
+      <p>这是一个进行中的项目，下面是 2026-08-31 的实际状态。已经写好规格但还没进引擎的部分标成「已定义」。</p>
       <div class="st">
         <div><span class="tag tag-a">已实现</span><span>输入缓冲与优先级仲裁、跨状态缓冲保留策略</span></div>
         <div><span class="tag tag-a">已实现</span><span>取消矩阵仲裁、招式执行、球体扫描判定与单次挥砍去重</span></div>
         <div><span class="tag tag-a">已实现</span><span>「决」的积累与分段释放仲裁、帧表运行时校验</span></div>
-        <div><span class="tag tag-b">已定义</span><span>Boss 一阶段：5–6 招、四类可应对标记、决策权重表</span></div>
+        <div><span class="tag tag-a">已实现</span><span>玩家受击链路：血量、伤害、24 帧硬直、死亡、缓冲保留规则</span></div>
+        <div><span class="tag tag-a">已实现</span><span>完美闪避全套：帧表驱动的无敌帧、0.30x 时缓 0.75 秒（8 帧插值退出）、决 +33、1 秒反击窗口</span></div>
+        <div><span class="tag tag-a">已实现</span><span>专属反击招式 <span class="mono">Counter_01</span>：完闪窗口内轻击自动变招、突进落位、必破韧</span></div>
+        <div><span class="tag tag-a">已实现</span><span>Boss 单次打击，判定窗口帧 20–23（11 次挥击实测回填）；攻击软索敌</span></div>
+        <div><span class="tag tag-c">未实现</span><span><b>Boss 受击</b>：接口已挂，<span class="mono">TakeCombatHit</span> 仍是空实现，Boss 不掉血、无韧性条</span></div>
+        <div><span class="tag tag-b">已定义</span><span>Boss 一阶段其余招式（5–6 招）、四类可应对标记、决策权重表</span></div>
         <div><span class="tag tag-b">已定义</span><span>二元护甲门槛与破韧后的处决窗口（约 120 帧的二选一博弈）</span></div>
         <div><span class="tag tag-c">未实现</span><span>反馈链的屏震 / FOV / 音效 / 特效（目前只有顿帧）</span></div>
         <div><span class="tag tag-c">未实现</span><span>单目标锁定、四方向闪避位移、战斗姿态 locomotion、正式 UI</span></div>
+      </div>
+      <div class="note">
+        <span class="k">一个攻防回合差最后一环</span>
+        玩家能被打、能完美闪避、能反击，判定也能命中 Boss，但 Boss 不会掉血。补上 Boss 的血量与韧性即闭环，那是下一步的第一件事。
       </div>
       <div class="note cool">
         <span class="k">locomotion 的一处穿帮</span>
