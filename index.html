@@ -337,6 +337,7 @@ tr:last-child td{border-bottom:0;}
   <div class="nav-in">
     <a class="nav-brand" href="#/">WU YUNKE <b>/</b> WINK</a>
     <div class="nav-links">
+      <a href="#/shedaoren" data-v="shedaoren">Shedaoren</a>
       <a href="#/act" data-v="act">ACT Prototype</a>
       <a href="#/work" data-v="work">Shipped Work</a>
       <a href="#/godot" data-v="godot">Godot RPG</a>
@@ -360,8 +361,9 @@ tr:last-child td{border-bottom:0;}
       </p>
       <p class="bio">
         此前在杭州闲米科技任战斗与数值策划五个月，参与的《徒儿，救我》已于今年 8 月上线，
-        其中约三个月为项目组唯一策划。目前在用 UE 5.8 独立开发一个高速 ACT 战斗原型，
-        另有一个基于 Godot 的回合制 RPG 在开发中。
+        主策离职后约三个月为项目组唯一策划。最近用三天半做完了一个可玩的 Boss 战 Demo
+        「赊刀人」，配一份十六章的角色战斗设计案。手上还有一个高速 ACT 战斗原型，
+        以及一个基于 Godot 的回合制 RPG。
       </p>
       <p class="bio">
         以下是我的部分作品。如果对我或我的作品有兴趣，欢迎通过下列方式与我联系。
@@ -370,7 +372,7 @@ tr:last-child td{border-bottom:0;}
       <div class="links">
         <a class="lk solid" href="mailto:15858252358@163.com">邮件联系我</a>
         <a class="lk" href="https://github.com/Winnnnk" target="_blank" rel="noopener">GitHub</a>
-        <a class="lk" href="#/act">看战斗原型</a>
+        <a class="lk" href="#/shedaoren">看赊刀人 Demo</a>
       </div>
     </div>
   </header>
@@ -378,11 +380,19 @@ tr:last-child td{border-bottom:0;}
   <section class="idx-sec">
     <div class="idx-hd">Selected Work</div>
     <div class="idx-list">
+      <a class="entry" href="#/shedaoren">
+        <span class="kind">Playable Demo · UE5.8</span>
+        <span>
+          <span class="t">赊刀人 · 角色战斗设计与可玩 Demo</span>
+          <span class="d">押出一项属性换另一项立即升档，十八秒内兑现则收刀，超时连本带押。给「攒资源」这段无条件的时间装上成败判定。可玩 Shipping 包 + 十六章设计案，三天半。</span>
+        </span>
+        <span class="ar">&rarr;</span>
+      </a>
       <a class="entry" href="#/act">
         <span class="kind">Personal · UE5.8</span>
         <span>
           <span class="t">高速 ACT 战斗系统原型</span>
-          <span class="d">UE5.8 纯蓝图。取消矩阵、输入缓冲与优先级仲裁、「决」资源系统、完美闪避与专属反击，全部帧窗口实测回填。蓝图实现与 Claude MCP 协作。</span>
+          <span class="d">UE5.8 纯蓝图 Boss 战切片。取消矩阵、输入缓冲与优先级仲裁、「决」资源系统、完美闪避与弹反、五招 Boss 与读招提示，全部帧窗口实测回填。蓝图实现与 Claude MCP 协作。</span>
         </span>
         <span class="ar">&rarr;</span>
       </a>
@@ -422,13 +432,173 @@ tr:last-child td{border-bottom:0;}
   </section>
 </main>
 
+<!-- ==================== SHEDAOREN ==================== -->
+<main class="view" id="v-shedaoren">
+  <div class="pg">
+    <div class="pg-hd">
+      <a class="back" href="#/">&larr; 返回</a>
+      <h2><span class="cn">赊刀人 · 角色战斗设计与可玩 Demo</span></h2>
+      <p class="pg-sub">押一项属性换另一项立即升档 · 十八秒内兑现则收刀，超时连本带押</p>
+      <div class="pg-meta">
+        <div><b>项目</b>命题作业 · 个人项目<br>UE 5.8 · 纯蓝图 · 不使用 GAS</div>
+        <div><b>时间</b>2026.09 · 三天半交付</div>
+        <div><b>我的角色</b>角色设定 · 机制规格 · 数值推导<br>帧数据标定 · 试玩验收</div>
+      </div>
+    </div>
+
+    <div class="body">
+      <h3>要解决的问题</h3>
+      <p class="lede">二次元 ACT 的战斗设计，主流做法基本是七件事的排列组合，而这七件的底层语法是同一句：攒，然后放。</p>
+      <p>
+        元素反应、切人循环、能量条到大招的爆发窗口、完美闪避接时缓与反击、弹反、破盾或失衡条、增伤型辅助，
+        七件各有各的皮，底下是同一套结构。这套结构有一个所有作品共享的性质：攒的过程是无条件的，
+        按键即增长，最终必然攒满，不存在攒不到的可能。
+      </p>
+      <p>
+        攒条阶段因此没有决策，只有等待，而它占掉一场战斗一半以上的时间。全部决策集中在「什么时候放」。
+      </p>
+      <p>
+        我改的是这一条：<b>给积累阶段装上成败判定。</b>
+      </p>
+      <div class="st" style="margin-top:26px">
+        <div><span class="tag tag-a">改动一</span><span>积累阶段具备失败分支。赊出去的强化要在一炷香之内兑现，未能兑现则连本带押，不仅没有积累，还倒退一档</span></div>
+        <div><span class="tag tag-a">改动二</span><span>顺序反转，先取后付。强化在赊的瞬间生效，代价在香尽时结算，整场战斗中玩家使用的都是尚未付清的强度</span></div>
+        <div><span class="tag tag-a">改动三</span><span>战斗参数在战斗中被重写。四项属性循环赊取，build 从战前决策转移到战中决策</span></div>
+        <div><span class="tag tag-a">改动四</span><span>主动强化敌人。大招把刀交给对手，Boss 的出招频率同步提高，由玩家主动发起</span></div>
+      </div>
+      <p style="margin-top:26px">
+        四条来自同一个动词。教学成本因此只发生一次——玩家第一次赊刀时讲清「先交付、限时、未兑现则连本带押」，
+        后续内容包括大招在内都是这条规则的变体。复用的部件也都是二游玩家已经掌握的：计数器、倒计时、增益状态、破韧窗口，
+        需要额外学习的只有「这个增益是借来的」这一层认知。
+      </p>
+
+      <h3>一次赊刀</h3>
+      <p>
+        按赊刀键，时间降到 0.25x，浮出候选判词，选择上限三秒。选中一条，被赊的属性立刻升一档，
+        押出去的那一项打上墨记而不扣除。一炷香十八秒之内完成谶写的计数目标，他来收刀，升上去的档位保留，押项归还；
+        香尽而计数未达标，连本带押，升上去的档位收回，押项落到欠账档。
+      </p>
+      <p>
+        减速期间不能移动、闪避、攻击，但会被 Boss 打中。起契之前先找安全窗口，这是起契的即时代价。
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>档位</th><th>记法</th><th>进入条件</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td>欠账</td><td class="mono">−1</td><td>作为押项，且该次赊刀失败</td><td>倍率与次数同时下调</td></tr>
+            <tr><td>常态</td><td class="mono">0</td><td>开局状态</td><td>基准值</td></tr>
+            <tr><td>强化</td><td class="mono">+1</td><td>作为被赊项，在选中谶的那一帧</td><td>高于基准</td></tr>
+            <tr><td>大招期</td><td class="mono">+2</td><td>递刀生效时，已在 +1 的项再升一档</td><td>上限档，解锁附带效果</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        四项是锋（伤害与破韧）、疾（出招速度）、命（血量与吸血）、影（闪避）。
+        四项之间只能循环赊取——<b>押命得锋、押锋得疾、押疾得影、押影得命</b>，押出去的不能是他刚给出的那一样。
+      </p>
+      <p>
+        同一项在一个大回合内只能被押一次，所以 +1 不会靠重复赊刀叠到 +2。这个角色在一局之内不累积净强度，
+        四项此消彼长，玩家改变的是配置。代价是他的输出峰值天然低于同期的爆发型角色，要靠整局的强化覆盖率补回来。
+      </p>
+
+      <h3>递刀</h3>
+      <p>
+        四项全部赊过之后，他可以对 Boss 赊刀。刀交给 Boss，双方同时进入强化状态，持续二十秒：
+        玩家四项各再升一档、血量回到上限的 60%，同时每秒掉血 1.5%，Boss 出招冷却 ×0.7。
+        这一次的谶是「你能杀了我，我来收刀」，玩家要做的是让它不成立。
+      </p>
+      <p>
+        持续掉血必须靠命档的吸血抵消，玩家一旦停手就会被自己的大招耗死。<b>这一条是为了排除消极对抗</b>——
+        二十秒的双向增益期里，站着躲不是一个可选项。
+      </p>
+      <p>
+        递刀对四项各升一档并以 +2 封顶，因此递刀生效时停在 0 的项只到 +1，停在 −1 的项只回到 0。
+        大招的收益与前面四条谶的成功数直接挂钩。
+      </p>
+
+      <h3>数据层</h3>
+      <p class="lede">全部倍率、门槛与帧数落在数据表里，不硬编码在蓝图中。</p>
+      <p>
+        帧表、Boss 帧表与选招表、谶表 <span class="mono">DT_Omen</span>、调参资产 <span class="mono">DA_PledgeTuning</span>，
+        外加六个枚举与三个结构体。Boss AI 由一张六行的选招表驱动，调整权重不需要改动蓝图。
+        每一处改动都可以对回具体的表与行。
+      </p>
+      <p>
+        工程侧是 <span class="mono">BP_PlayerCombatChar</span>（70 个函数图）、<span class="mono">BP_Boss</span>（30 个函数图）、
+        <span class="mono">WBP_CombatHUD</span> 与 <span class="mono">Lvl_BossArena</span>。
+        系统规格、数值推导、帧数据标定与试玩验收由我完成，蓝图的具体实现部分与 AI 协作完成，工具链是 Epic 官方的 Unreal MCP 插件。
+      </p>
+
+      <h3>实测：两条谶的耗时和推导相反</h3>
+      <p>
+        交付前按一段 73 秒的试玩录像抽帧读 HUD，两条谶的实际耗时都偏离了推导，而且方向相反。
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>谶</th><th>推导预期</th><th>实测</th><th>用掉的香</th></tr></thead>
+          <tbody>
+            <tr><td>血盈三斗（押命得锋）</td><td>约 17s</td><td class="mono">约 6s</td><td>1/3</td></tr>
+            <tr><td>门开四记（押锋得疾）</td><td>约 11s</td><td class="mono">约 15s</td><td>5/6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        两条的成因都能定位。谶一的门槛 280 是在 Boss 血量为 2,400 时定下的，此后 Boss 体型放大、血量补偿到 3,200，
+        门槛没有同步回调，相对难度从设计案的 20% 掉到 8.75%。谶二偏紧的原因在韧性：设计案里玩家 2.8 套三段连破韧，
+        工程里要 4.7 套，第一个破韧窗口的出现时间明显后移。
+      </p>
+      <p>
+        实测与推导表的预测一致，说明推导方法本身成立，出错的是输入的数值。由此得到一条对正式版的约束：
+        <b>以比值作为约束条件，绝对值由比值推算。</b>写成「谶一门槛 = Boss 最大血量 × 20%」「破韧所需 = 2.8 套三段连」这样，
+        修改一侧时另一侧会自动跟随；两个量纲各自维护绝对值的做法，在只改了一侧时不会产生任何报错。
+      </p>
+      <p class="note cool">
+        占空比 50% 这个数仍然没有实测支撑，整套 DPS 推导建立在它上面。单局录像给不出统计结论，
+        定量需要多局录像配合一个输出统计器。这一条列为下一阶段的首要补齐项。
+      </p>
+
+      <h3>当前状态</h3>
+      <p>更新于 2026-09-11。</p>
+      <div class="st">
+        <div><span class="tag tag-a">已实测</span><span>四项四档的全部倍率；赊刀四态循环；起契减速与三秒超时</span></div>
+        <div><span class="tag tag-a">已实测</span><span>两条谶的计数、结算与连本带押分支；递刀的双向增益、二十秒时限、每秒掉血与结算伤害</span></div>
+        <div><span class="tag tag-a">已实测</span><span>HUD：香、谶与计数、四项档位、闪避次数、大招槽</span></div>
+        <div><span class="tag tag-b">已定义</span><span>另外两条谶的计数规则与门槛（数据行已建，开关关闭）</span></div>
+        <div><span class="tag tag-b">已定义</span><span>Boss 二阶段护甲态与专属招、收账（处决）、「墨」的表现层规格</span></div>
+        <div><span class="tag tag-c">未实现</span><span>锋 +2 的范围剑气、命 +2 的一次不死、影的档位对闪避位移的影响</span></div>
+        <div><span class="tag tag-c">未验证</span><span>失败分支与赎回——录像里两条谶都成功了，欠账档没有被录到</span></div>
+      </div>
+      <p style="margin-top:26px">
+        HUD 目前全部用数字显示，而设计案的主张是屏上只出现香、谶、墨、影四样符号，不出现数字与百分比。
+        Demo 保留数字是为了让机制可验证——原型里第一个被发现的严重缺陷（计数器恒为 0）就是通过屏上的数字暴露的。
+      </p>
+
+      <h3>交付物</h3>
+      <p>
+        可玩 Shipping 包（Windows 64 位，解压后约 606 MB）、源工程、说明书与设计案。
+        素材按 cook 产物的引用集裁剪，Content 由 4.4 GB 压到 776 MB：ParagonRampage 1,754 个资产保留 128 个，
+        9CG Sword Animation Pack 1,254 个保留 50 个。这么做一是体积，二是授权——付费包整包原样上传更接近再分发。
+      </p>
+      <p style="margin-bottom:26px;">
+        <a href="pdf/shedaoren_design_doc.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">设计案 PDF（十六章）</a>
+        <span style="color:var(--ink-3)">　·　</span>
+        <a href="pdf/shedaoren_manual.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">Demo 说明书 PDF</a>
+      </p>
+      <!-- 试玩视频：B 站上传后把下面两行取消注释，把 BVxxxxxxxxxx 换成实际号
+      <h3>试玩视频</h3>
+      <p>B 站：<a href="https://b23.tv/BVxxxxxxxxxx" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">b23.tv/BVxxxxxxxxxx</a></p>
+      -->
+    </div>
+  </div>
+</main>
+
 <!-- ==================== ACT ==================== -->
 <main class="view" id="v-act">
   <div class="pg">
     <div class="pg-hd">
       <a class="back" href="#/">&larr; 返回</a>
       <h2><span class="cn">高速 ACT 战斗系统原型</span></h2>
-      <p class="pg-sub">玩家侧完整垂直切片 · 三段轻击 / 「决」资源重击 / 完美闪避与反击</p>
+      <p class="pg-sub">Boss 战垂直切片 · 取消窗口 / 「决」资源重击 / 完美闪避与弹反 / 五招读招</p>
       <div class="pg-meta">
         <div><b>项目</b>个人项目<br>UE 5.8 · 纯蓝图</div>
         <div><b>时间</b>2026.08 – 至今</div>
@@ -445,8 +615,8 @@ tr:last-child td{border-bottom:0;}
         互相进攻，以及夹在其中的一点点策略。
       </p>
       <p>
-        所以这个 demo 鼓励玩家和 Boss 对着打。面对 Boss 的攻击，玩家可以闪避也可以格挡，
-        完美闪避和完美格挡都给很高的回报。Boss 的韧性条会在一段时间不受攻击后随时间回升，
+        所以这个 demo 鼓励玩家和 Boss 对着打。面对 Boss 的攻击，玩家可以闪避也可以弹反，
+        完美闪避和弹反都给很高的回报。Boss 的韧性条会在一段时间不受攻击后随时间回升，
         这是为了让玩家在观察 Boss 出招的同时不能完全不出手。
       </p>
       <p>
@@ -455,19 +625,19 @@ tr:last-child td{border-bottom:0;}
       <div class="st" style="margin-top:26px">
         <div><span class="tag tag-a">已实现</span><span>闪避与取消规则；完美闪避的无敌帧、时缓、资源奖励与反击窗口</span></div>
         <div><span class="tag tag-a">已实现</span><span>专属反击招式 <span class="mono">Counter_01</span>，完闪窗口内轻击自动变招</span></div>
-        <div><span class="tag tag-b">待做</span><span>完美格挡（弹反）</span></div>
-        <div><span class="tag tag-b">待做</span><span>韧性条随时间回升，用来惩罚纯观望</span></div>
+        <div><span class="tag tag-a">已实现</span><span>弹反：9 帧窗口，只对蓝环招式生效，成功即破韧</span></div>
+        <div><span class="tag tag-a">已实现</span><span>韧性条在 5 秒未受击后回升，用来惩罚纯观望</span></div>
       </div>
 
       <p style="margin-bottom:26px;">
-        完整设计案 16 页，含 11×3 取消矩阵原表、输入缓冲与仲裁流程、「决」系统的数值反解、
-        Boss 一阶段规格、七条帧数据原则与止损梯度：
+        完整设计案 24 页，含取消矩阵原表、输入缓冲与仲裁流程、「决」系统的数值反解、
+        弹反与读招提示、Boss 五招与韧性规格、反馈链、帧数据原则、设计与实现差异表和止损梯度：
         <a href="pdf/act_design_doc.pdf" target="_blank" rel="noopener" style="color:var(--hot);border-bottom:1px solid var(--hot);">下载 PDF</a>。
       </p>
 
       <h3>系统怎么落地</h3>
       <p class="lede">
-        全部时序数字集中在一张 23 列的帧数据表里。取消矩阵是这张表的视图，本身不存数值，
+        全部时序数字集中在一张 24 列的帧数据表里。取消矩阵是这张表的视图，本身不存数值，
         所以调整任何一个窗口都只要改表，不用动蓝图。
       </p>
 
@@ -481,7 +651,7 @@ tr:last-child td{border-bottom:0;}
       </figure>
 
       <h3>演示视频</h3>
-      <p>53 秒，Debug HUD 全程可见。左上角实时打出当前状态、招式、第几帧、连段与闪避窗口、输入缓冲和决值，画面上每一次连段和取消都能对上这张表里的数字。这一版录于 2026-08-31，包含完美闪避的时缓与专属反击。</p>
+      <p>53 秒，Debug HUD 全程可见。左上角实时打出当前状态、招式、第几帧、连段与闪避窗口、输入缓冲和决值，画面上每一次连段和取消都能对上这张表里的数字。这一版录于 2026-08-31，包含完美闪避的时缓与专属反击；之后加入的 Boss 五招、读招提示、弹反和八方向闪避还不在视频里。</p>
       <figure class="vid">
         <video controls preload="metadata" poster="video/poster.jpg" playsinline>
           <source src="video/combat_demo.mp4" type="video/mp4">
@@ -537,7 +707,7 @@ tr:last-child td{border-bottom:0;}
       <div class="asym">
         <details class="ai" open>
           <summary>闪避接攻击 F16，比闪避接闪避 F22 早 6 帧</summary>
-          <div class="b">闪完接攻击比闪完再闪快 6 帧，玩家自然会选前者。如果反过来，连续闪避更划算，高速 ACT 会退化成一路滚到 Boss 背后再打。这 6 帧决定了这套战斗奖励进攻还是奖励逃跑，对应设计理念里的「鼓励玩家与 Boss 对攻」。</div>
+          <div class="b">闪完接攻击比闪完再闪快 6 帧，玩家自然会选前者。如果反过来，连续闪避更划算，高速 ACT 会退化成一路滚到 Boss 背后再打。这 6 帧决定了这套战斗奖励进攻还是奖励逃跑，对应设计理念里的「鼓励玩家与 Boss 对攻」。<br><br>目前工程里这一条暂时不成立：给闪避加了 6 帧收招停顿之后，闪避接攻击推到了 F28，晚于再闪一次。两个目标有冲突，怎么拆还没定。</div>
         </details>
         <details class="ai">
           <summary>重击的轻击取消（F19–F22）远早于它的收招结束（F79–F103）</summary>
@@ -578,7 +748,7 @@ tr:last-child td{border-bottom:0;}
       </div>
 
       <h4>数值的反解</h4>
-      <p>数值不是先填后调的。先写下想要的体验：<b>读中一次招，加上打出一套完整连段，正好破甲</b>，再让每一项的收益去凑这个等式。</p>
+      <p>下面的数值由目标体验反推。先写下想要的体验：<b>读中一次招，加上打出一套完整连段，正好破甲</b>，再让每一项的收益去凑这个等式。</p>
 
       <div class="inst">
         <div class="inst-hd"><span class="t">Resolve Economy</span><span class="v">拖动滑块</span></div>
@@ -607,15 +777,46 @@ tr:last-child td{border-bottom:0;}
         </div>
       </div>
 
+      <h3>Boss 与读招</h3>
+      <p class="lede">Boss 一阶段目前有五招，每招标一种应对方式，玩家从起手就能看出该怎么处理。</p>
+      <div class="tw">
+      <table>
+        <thead><tr><th>招式</th><th>应对</th><th>判定窗口</th><th>提示</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Smash_A</td><td>可弹反</td><td class="mono">F20–24</td><td>蓝色收缩环</td></tr>
+          <tr><td class="mono">Smash_C</td><td>可弹反</td><td class="mono">F21–27</td><td>蓝色收缩环</td></tr>
+          <tr><td class="mono">Smash_B</td><td>只能闪</td><td class="mono">F20–23</td><td>红色收缩环</td></tr>
+          <tr><td class="mono">Heavy_C</td><td>只能闪</td><td class="mono">F16–18</td><td>红色收缩环</td></tr>
+          <tr><td class="mono">GroundSmash</td><td>必须跑位</td><td class="mono">F57 引爆，半径 300</td><td>地面预警圈</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>提示有两种形态：出手的位置出现收缩环，Boss 脚下出现地面预警圈。两种用同一套读法，外环固定，内环往里收，收满的那一帧就是命中帧。地面圈的外环半径和 AoE 判定半径读的是同一格数据，圈画多大就打多大。</p>
+      <p>弹反只对蓝环生效，按在红环招上必定失败。弹反做出来之前，蓝红两类的正确应对都是完美闪避，颜色对玩法没有影响；有了弹反，读错颜色才有代价。</p>
+      <p>Boss 选招用一张表：先按距离和冷却筛掉当前用不了的招，再按权重抽。选什么和怎么打分在两张表里，调出招倾向不用碰动作帧数据。</p>
+      <div class="note">
+        <span class="k">弹反的反应预算</span>
+        弹反第一版是 6 帧窗口，试玩里一次都没成功。日志显示蓝环亮起到命中只有约 333ms，玩家必须在环亮后 216–300ms 之间按下，而人的选择反应时间在 350–450ms，窗口在反应过来之前就已经关了。
+        <br><br>
+        Boss 的判定帧由动画决定，不能往后挪，所以我同时动了两处：弹反窗口放宽到 9 帧，Boss 出招整体放慢到 0.65 倍。帧号读的是 Montage 本地位置，放慢之后第 20 帧仍然对应同一个挥击姿势。读招期变成约 512ms，下一轮试玩弹反成功 5 次。代价是五招一起变慢，Boss 的压迫感下降，要按招区分得给帧表加一列。
+      </div>
+
       <h3>帧数据</h3>
       <p>我做了一套运行时打点回读：让判定在触发的那一帧把帧号写进日志，再把日志读回来填进帧数据表。表里每一个窗口都是这样实测出来的，和编辑器里显示的完全一致。之所以要绕这一圈，是因为引擎的 API 在读和写两个方向都拿不到 Animation Notify 的起止帧，而判定窗口是这套系统里最关键的一组数字。</p>
       <div class="note">
         <span class="k">回填之后发现的问题</span>
         轻击二段的取消帧原本写的是 F18，而它的判定<b>第 8 帧就结束了</b>——中间 10 帧是纯死时间，正是试玩时「不跟手」的直接来源。一直用设计预期值的话，这个问题不会浮出来。
       </div>
-      <p>同一套思路还落成了一个运行时校验函数：每次开始游戏检查五条不变式，违规时报出「哪一行 / 违反第几条 / 涉及的数各是多少」，而不是只说一句数据错误。</p>
+      <div class="note">
+        <span class="k">接触帧不能用来找窗口</span>
+        Boss 的 <span class="mono">Smash_B</span> 曾被当成「射程不够」查了三轮。距离曲线上 F11–14 有一次接触，我按其他招「第一簇接触就是挥击」的规律把它填成了判定窗口；后来确认那只是抬手时右手从玩家身边扫过，真正的挥击在后半段、由左手打出，而判定球一直挂在右手上。判定球改挂左手之后，一轮就量出了 F20–23。
+        <br><br>
+        之后的规矩是：接触帧只用来收窄一个已知的窗口，用哪个部位、在动画哪一段打出去，先目视确认再量帧。
+      </div>
+      <p>同一套思路还落成了一个运行时校验函数：每次开始游戏检查五条不变式，违规时报出「哪一行 / 违反第几条 / 涉及的数各是多少」。</p>
 
       <h3>Boss 护甲</h3>
+      <p>这一部分的规格已经写完，还没有进引擎。</p>
       <p>Boss 血量降至 50% 以下时进入护甲状态。该状态下玩家造成伤害将锁定 Boss 韧性条，Boss 获得 90% 减伤，仅满决重击可破除护甲，破甲后进入处决窗口。</p>
       <div class="note">
         <span class="k">护甲机制成立的前置条件</span>
@@ -623,24 +824,24 @@ tr:last-child td{border-bottom:0;}
       </div>
 
       <h3>当前状态</h3>
-      <p>这是一个进行中的项目，下面是 2026-08-31 的实际状态。已经写好规格但还没进引擎的部分标成「已定义」。</p>
+      <p>这是一个进行中的项目，下面是 2026-09-22 的实际状态。「已实现」指已经有运行时日志或试玩数据，「待验收」指逻辑已接通、还没经过试玩确认，「已定义」指规格写完、还没进引擎。</p>
       <div class="st">
-        <div><span class="tag tag-a">已实现</span><span>输入缓冲与优先级仲裁、跨状态缓冲保留策略</span></div>
-        <div><span class="tag tag-a">已实现</span><span>取消矩阵仲裁、招式执行、球体扫描判定与单次挥砍去重</span></div>
-        <div><span class="tag tag-a">已实现</span><span>「决」的积累与分段释放仲裁、帧表运行时校验</span></div>
-        <div><span class="tag tag-a">已实现</span><span>玩家受击链路：血量、伤害、24 帧硬直、死亡、缓冲保留规则</span></div>
-        <div><span class="tag tag-a">已实现</span><span>完美闪避全套：帧表驱动的无敌帧、0.30x 时缓 0.75 秒（8 帧插值退出）、决 +33、1 秒反击窗口</span></div>
-        <div><span class="tag tag-a">已实现</span><span>专属反击招式 <span class="mono">Counter_01</span>：完闪窗口内轻击自动变招、突进落位、必破韧</span></div>
-        <div><span class="tag tag-a">已实现</span><span>Boss 单次打击，判定窗口帧 20–23（11 次挥击实测回填）；攻击软索敌</span></div>
-        <div><span class="tag tag-c">未实现</span><span><b>Boss 受击</b>：接口已挂，<span class="mono">TakeCombatHit</span> 仍是空实现，Boss 不掉血、无韧性条</span></div>
-        <div><span class="tag tag-b">已定义</span><span>Boss 一阶段其余招式（5–6 招）、四类可应对标记、决策权重表</span></div>
-        <div><span class="tag tag-b">已定义</span><span>二元护甲门槛与破韧后的处决窗口（约 120 帧的二选一博弈）</span></div>
-        <div><span class="tag tag-c">未实现</span><span>反馈链的屏震 / FOV / 音效 / 特效（目前只有顿帧）</span></div>
-        <div><span class="tag tag-c">未实现</span><span>单目标锁定、四方向闪避位移、战斗姿态 locomotion、正式 UI</span></div>
+        <div><span class="tag tag-a">已实现</span><span>输入缓冲与优先级仲裁、取消矩阵、球体扫描判定与单次挥砍去重、「决」的积累与分段释放、帧表运行时校验</span></div>
+        <div><span class="tag tag-a">已实现</span><span>完美闪避：无敌帧 F1–F20、0.30x 时缓、决 +33、1 秒反击窗口与专属反击 <span class="mono">Counter_01</span></span></div>
+        <div><span class="tag tag-a">已实现</span><span>八方向闪避与连闪：位移 240cm，2 格充能，每格 2 秒</span></div>
+        <div><span class="tag tag-a">已实现</span><span>弹反：9 帧窗口，只对蓝环招式生效，成功即破韧</span></div>
+        <div><span class="tag tag-a">已实现</span><span>Boss 五招与选招表、收缩环与地面预警圈两种读招提示</span></div>
+        <div><span class="tag tag-a">已实现</span><span>Boss 受击：2400 血、220 韧性、5 秒未受击后回复、破韧硬直 3 秒</span></div>
+        <div><span class="tag tag-a">已实现</span><span>分级顿帧（3 / 6 / 12 帧）；战斗 HUD：玩家血量、决、闪避充能，Boss 血量、韧性</span></div>
+        <div><span class="tag tag-b">待验收</span><span>屏震四档与 FOV 推拉；Boss 方向性受击与逼近；满决改为「阴影出击 + 本体收势」</span></div>
+        <div><span class="tag tag-b">已定义</span><span>第四类应对「追击 / 连段」招式；二元护甲门槛、满决破甲与处决窗口、二阶段</span></div>
+        <div><span class="tag tag-c">未实现</span><span>单目标锁定、战斗姿态 locomotion、音效与特效</span></div>
       </div>
       <div class="note">
-        <span class="k">一个攻防回合差最后一环</span>
-        玩家能被打、能完美闪避、能反击，判定也能命中 Boss，但 Boss 不会掉血。补上 Boss 的血量与韧性即闭环，那是下一步的第一件事。
+        <span class="k">一个攻防回合已经跑通</span>
+        Boss 逼近、按距离选招、起手亮环，玩家按颜色弹反或完美闪避，或者看地面圈跑开，然后反击，Boss 掉血掉韧性，破韧硬直 3 秒，再恢复，这一整轮在试玩里完整跑通了。
+        <br><br>
+        接下来是锁定镜头、第四类招式，以及整场时长的复算。现在 Boss 一招 20–50 伤害、玩家 100 血，「陌生玩家三分钟打完」这条验收大概率还不成立。
       </div>
       <div class="note cool">
         <span class="k">locomotion 的一处穿帮</span>
@@ -675,7 +876,7 @@ tr:last-child td{border-bottom:0;}
           </tbody>
         </table>
       </div>
-      <div class="note">资源循环的壳来自黑神话悟空，临界点一击的内核来自只狼，防御成功转化为进攻资源的接口来自贝优妮塔与忍者龙剑传。</div>
+      <div class="note">读招的收缩环参考了鸣潮，我把它和地面预警圈统一成了同一套读法。<br><br>资源循环的壳来自黑神话悟空，临界点一击的内核来自只狼，防御成功转化为进攻资源的接口来自贝优妮塔与忍者龙剑传。</div>
     </div>
   </div>
 </main>
@@ -871,7 +1072,7 @@ tr:last-child td{border-bottom:0;}
   "use strict";
 
   /* ---------------- router ---------------- */
-  var VIEWS = ["home","act","work","godot","teardown","ai"];
+  var VIEWS = ["home","shedaoren","act","work","godot","teardown","ai"];
   function current(){
     var h = (location.hash || "#/").replace(/^#\/?/, "");
     return VIEWS.indexOf(h) >= 0 ? h : "home";
